@@ -1,38 +1,321 @@
-.App {
-  text-align: center;
+:root
+{
+    --colour-page: rgb(50, 50, 65);
+    --colour-text: white;
+    --colour-experiment: #8b0000;
+
+    --colour-button: black;
+
+    --size-pool-ball: 175px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+*
+{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+    color: var(--colour-text);
+    font-family: Verdana, Tahoma, sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+html
+{
+    height: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+body
+{
+    min-height: 100%;
+    background: var(--colour-page);
 }
 
-.App-link {
-  color: #61dafb;
+#root
+{
+    padding-bottom: 2vh;
+
+    margin: auto;
+    height: fit-content;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#conGameMenu
+{
+    height: fit-content;
+    margin: auto;
+}
+
+.pageHeading
+{
+    width: 100vw;
+    height: 5vh;
+
+    font-size: 2vh;
+    line-height: 5vh;
+
+    padding-left: 5vw;
+
+    background-color: var(--colour-button);
+}
+
+#conGameMenu > h2
+{
+    margin-top: 3vh;
+
+    margin-bottom: 1vh;
+}
+
+#conNumBalls, #conNumPlayers
+{
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+#conNumBalls
+{
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+h2
+{
+    text-align: center;
+
+    font-size: 2vh;
+
+    margin-top: 3vh;
+    margin-bottom: 1vh;
+}
+
+div
+{
+    width: fit-content;
+}
+
+.clearFix::after
+{
+    content: ".";
+
+    display: block;
+
+    clear: both;
+
+    visibility: hidden;
+
+    line-height: 0;
+
+    height: 0;
+}
+
+.gridBtnNum
+{
+    /* height: fit-content; */
+    /* clear: both; */
+    margin: auto;
+}
+
+.btnNum
+{
+    display: block;
+    float: left;
+
+    width: 5vh;
+    height: 5vh;
+
+    border: 1px solid var(--colour-button);
+    border-radius: 8px;
+
+    margin: 0.5vh;
+
+    font-size: 3vh;
+    line-height: 5vh;
+
+    background-color: var(--colour-button);
+    /* color: var(--colour-text); */
+}
+
+.btnNumSelected
+{
+    background-color: var(--colour-text);
+    color: var(--colour-button);
+}
+
+#btnNext, #btnStart, #btnReplay, #btnQuit
+{
+    display: block;
+
+    width: 90%;
+    max-width: 750px;
+    height: 5vh;
+
+    margin: auto;
+
+    margin-top: 40px;
+
+    background-color: var(--colour-button);
+
+    font-size: 3vh;
+    line-height: 5vh;
+
+    /* padding: 10px; */
+
+    border: 1px solid var(--colour-button);
+    border-radius: 20px;
+}
+
+#btnNext
+{
+    margin-top: 30vh;
+}
+
+#btnStart
+{
+    margin-top: 30vh;
+}
+
+#conPlayerNames
+{
+    /* width: 90vw;
+    max-width: 700px; */
+
+    margin: auto;
+}
+
+.conPlayerName
+{
+    /* width: 75%; */
+
+    text-align: center;
+
+    margin: auto;
+
+    margin-bottom: 20px;
+}
+
+.conPlayerName > input
+{
+    width: 90vh;
+    max-width: 750px;
+
+    font-size: 1.5vh;
+
+    text-align: center;
+
+    background-color: var(--colour-button);
+
+    border: 1px solid var(--colour-button);
+    border-radius: 5px;
+
+    margin-top: 5px;
+
+    padding: 5px;
+}
+
+.poolBall
+{
+    /* width: 90px;
+    height: 90px; */
+    width: var(--size-pool-ball);
+    height: var(--size-pool-ball);
+
+    border: 0px solid transparent;
+    border-radius: 50%;
+
+    /* padding: 15px 0px; */
+    padding: calc(var(--size-pool-ball) * (1 / 6)) 0px;
+
+    margin: calc(var(--size-pool-ball) * (1 / 5));
+
+    overflow: hidden;
+}
+
+.conPoolBall
+{
+    float: left;
+
+    border: 1px solid var(--colour-page);
+}
+
+.poolBallStripe
+{
+    width: 100%;
+
+    /* height: 60px; */
+    height: calc(var(--size-pool-ball) * (2 / 3));
+
+    padding: calc(var(--size-pool-ball) * (1 / 12)) 0px;
+}
+
+.poolBallNumber
+{
+    /* width: 50px;
+    height: 50px; */
+    width: calc(var(--size-pool-ball) * (1 / 2));
+    height: calc(var(--size-pool-ball) * (1 / 2)); 
+
+    line-height: calc(var(--size-pool-ball) * (1 / 2));
+
+    border: 0px solid transparent;
+    border-radius: 50%;
+
+    margin: auto;
+
+    font-size: calc(var(--size-pool-ball) * (3 / 10));
+
+    text-align: center;
+
+    background-color: white;
+    color: black;
+}
+
+.poolBallNumber > span
+{
+    color: black;
+}
+
+#conGame > h2
+{
+    font-size: 2.5vh;
+}
+
+#conBalls
+{
+    margin: auto;
+}
+
+#conPlayerList
+{
+    width: 90vw;
+    max-width: 800px;
+
+    margin: auto;
+}
+
+.conPlayer
+{
+    width: 100%;
+
+    font-size: 2.25vh;
+
+    text-align: center;
+
+    margin: auto;
+
+    margin-bottom: 3vh;
+
+    text-align: center;
+
+    background-color: var(--colour-button);
+
+    border: 1px solid var(--colour-button);
+    border-radius: 20px;
+
+    padding: 1vh 0;
+}
+
+#conPlayerList > h2, #conBalls > h2
+{
+    text-align: center;
+
+    font-size: 20px;
+    margin-bottom: 10px;
 }
