@@ -2,7 +2,7 @@
 {
     --colour-page: rgb(50, 50, 65);
     --colour-text: white;
-    --colour-experiment: #8b0000;
+    --colour-experiment: #e2e201;
 
     --colour-button: black;
 
@@ -310,6 +310,11 @@ div
     border-radius: 20px;
 
     padding: 1vh 0;
+}
+
+.conPlayerSelected
+{
+    border-color: var(--colour-text);
 }
 
 #conPlayerList > h2, #conBalls > h2

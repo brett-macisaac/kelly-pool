@@ -60,7 +60,13 @@ function PlayerNamesForm()
                         return (
                             <div className = "conPlayerName" key = {index}>
                                 <h2>Player {index + 1}</h2>
-                                <input type = "text" placeholder = "Name" value = {name} onChange = { (event) => handleChange(event, index) }  />
+                                <input 
+                                    type = "text" 
+                                    placeholder = "Name" 
+                                    value = {name} 
+                                    onChange = { (event) => handleChange(event, index) }
+                                    maxlength = "20"
+                                />
                             </div>
                         );
                     }

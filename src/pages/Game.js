@@ -49,6 +49,8 @@ function Game()
 
     );
 
+    const [indexSelected, setIndexSelected] = useState(-1);
+
     const RandomisePlayers = () =>
     {
         // Randomise the players.
@@ -187,6 +189,8 @@ function Game()
 
     const highlightPlayersBalls = (aIndex) =>
     {
+        aIndex === indexSelected ? setIndexSelected(-1) : setIndexSelected(aIndex);
+
         setBalls(
 
             (prev) =>
@@ -259,7 +263,7 @@ function Game()
     return (
         <div id = "conGame">
 
-            <h1 className = "pageHeading">Game Parameters</h1>
+            <h1 className = "pageHeading">Game</h1>
 
             <h2>Players</h2>
             <div id = "conPlayerList">
@@ -273,7 +277,7 @@ function Game()
                             return (
                                 <div 
                                     key = {index}
-                                    className = "conPlayer"
+                                    className = {index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer"}
                                     onClick = { () => highlightPlayersBalls(index) }
                                 >
                                     { player.name } { `(${lNumBalls})` }
