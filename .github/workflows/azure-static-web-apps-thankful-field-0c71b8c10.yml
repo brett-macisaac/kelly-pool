@@ -1,5 +1,9 @@
 name: Azure Static Web Apps CI/CD
 
+# Ensure that warnings are not treated as errors.
+env:
+  CI: false
+
 on:
   push:
     branches:
