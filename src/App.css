@@ -9,6 +9,17 @@
     --size-pool-ball: 175px;
 }
 
+/*
+* Alter the ball size for mobile devices.
+*/
+@media screen and (max-width: 480px)
+{
+    :root
+    {
+        --size-pool-ball: 20vw;
+    }
+}
+
 *
 {
     padding: 0;
@@ -193,7 +204,7 @@ div
 
 .conPlayerName > input
 {
-    width: 90vh;
+    width: 90vw;
     max-width: 750px;
 
     font-size: 1.5vh;
