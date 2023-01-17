@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 import GridBtnNum from './components/GridBtnNum';
 
@@ -15,8 +15,6 @@ function GameMenu()
 
     const selectNumPlayers = (aNum) =>
     {
-        console.log(`Players: ${aNum}`);
-
         setNumPlayers(aNum);
 
         // Can't do this, because setNumPlayers is asynchronous.
@@ -30,13 +28,16 @@ function GameMenu()
 
     const selectNumBalls = (aNum) =>
     {
-        console.log(`Balls: ${aNum}`);
-
         setNumBalls(aNum);
     };
 
     const handlePlay = () =>
     {
+        if (numPlayers <= 0 || numBalls <= 0)
+        {
+            return;
+        }
+
         navigate("/names", { state: { players: numPlayers, balls: numBalls } });
     };
 
@@ -48,10 +49,19 @@ function GameMenu()
     useEffect(
         () =>
         {
-            if (maxNumBalls() === 1)
+            const lMaxBallsPerPlayer = maxNumBalls();
+
+            console.log("Max balls per player: " + lMaxBallsPerPlayer);
+            console.log("Balls per player: " + numBalls);
+
+            if (lMaxBallsPerPlayer === 1)
             {
-                console.log("Autoset balls to 1");
                 setNumBalls(1);
+            }
+            else if (lMaxBallsPerPlayer < numBalls)
+            {
+                console.log(`The max balls per player ${lMaxBallsPerPlayer} exceeds the current setting of ${numBalls}.`);
+                setNumBalls(lMaxBallsPerPlayer);
             }
         },
         [numPlayers]
@@ -64,12 +74,12 @@ function GameMenu()
 
             <h2>Number of Players</h2>
             <div id = "conNumPlayers" className = "numSelector">
-                <GridBtnNum size = {14} columns = {4} minNum = {2} selectNum = {selectNumPlayers} initialSelect = {2} />
+                <GridBtnNum size = {14} columns = {4} minNum = {2} selectNum = {selectNumPlayers} selected = {numPlayers} />
             </div>
 
             <h2 id = "titleNumBalls" >Balls Per Player</h2>
             <div id = "conNumBalls" className = "numSelector">
-                <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} />
+                <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} selected = {numBalls} />
             </div>
 
             <button id = "btnNext" onClick = {handlePlay}>Next</button>

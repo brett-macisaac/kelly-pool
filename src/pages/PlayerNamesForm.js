@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'
 import utils from "../utils/utils.js";
-import consts from '../utils/constants.js';
 
 function PlayerNamesForm()
 {
@@ -65,7 +64,7 @@ function PlayerNamesForm()
                                     placeholder = "Name" 
                                     value = {name} 
                                     onChange = { (event) => handleChange(event, index) }
-                                    maxlength = "20"
+                                    maxLength = "20"
                                 />
                             </div>
                         );

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import PoolBall from "./components/subcomponents/PoolBall.js";
 import GridPoolBalls from "./components/GridPoolBalls.js";
 
 import consts from '../utils/constants.js';
@@ -22,6 +21,7 @@ function Game()
             {
                 return {
                     name: aName,
+                    in: true,
                     balls: Array(location.state.numBalls).fill(0).map(
                         (value) =>
                         {
@@ -114,6 +114,8 @@ function Game()
 
                 for (let i = 0; i < lDeepCopy.length; ++i)
                 {
+                    lDeepCopy[i].in = true;
+
                     for (let j = 0; j < lDeepCopy[i].balls.length; ++j)
                     {
                         lDeepCopy[i].balls[j].number = lBalls[lIndexBalls++];
@@ -138,23 +140,15 @@ function Game()
         []
     );
 
-    // useEffect(
-    //     () =>
-    //     {
-    //         console.log(players);
-    //         console.log(balls);
-    //     },
-    //     [players, balls]
-    // );
-
-
-    const potBall = (aBallNumber) =>
+    const clickBall = (aBallNumber) =>
     {
         setPlayers(
 
             (prev) =>
             {
                 const lDeepCopy = JSON.parse(JSON.stringify(prev));
+
+                let lBallFound = false;
 
                 for (let i = 0; i < lDeepCopy.length; ++i)
                 {
@@ -163,7 +157,23 @@ function Game()
                         if (lDeepCopy[i].balls[j].number === aBallNumber)
                         {
                             lDeepCopy[i].balls[j].in = !(lDeepCopy[i].balls[j].in);
+
+                            let lNumBalls = lDeepCopy[i].balls.filter(el => el.in === false).length;
+
+                            if (lNumBalls === 0)
+                            {
+                                alert(`${lDeepCopy[i].name} has been eliminated!`);
+                            }
+
+                            lBallFound = true;
+
+                            break;
                         }
+                    }
+
+                    if (lBallFound)
+                    {
+                        break;
                     }
                 }
 
@@ -186,6 +196,14 @@ function Game()
         );
 
     };
+
+    useEffect(
+        () =>
+        {
+            RandomiseBalls();
+        },
+        []
+    );
 
     const highlightPlayersBalls = (aIndex) =>
     {
@@ -273,6 +291,11 @@ function Game()
                         {
                             let lNumBalls = player.balls.filter(el => el.in === false).length;
 
+                            if (lNumBalls === 0)
+                            {
+                                return;
+                            }
+
                             // Specify whether a player is out (maybe change background colour).
                             return (
                                 <div 
@@ -292,7 +315,7 @@ function Game()
             <div id = "conBalls">
                 <GridPoolBalls 
                     columns = {3} 
-                    potBall = {potBall}
+                    clickBall = {clickBall}
                     balls = {balls}
                 />
 
