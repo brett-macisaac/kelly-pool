@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
+import "./style_grid_btn_num.css";
+
 function GridBtnNum(props)
 {
     let lMin = 1;

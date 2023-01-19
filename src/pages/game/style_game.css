@@ -1,0 +1,44 @@
+#conGame > h2
+{
+    font-size: 2.5vh;
+}
+
+#conPlayerList
+{
+    width: 90vw;
+    max-width: 800px;
+
+    margin: auto;
+}
+
+.conPlayer
+{
+    width: 100%;
+
+    font-size: 2.25vh;
+
+    text-align: center;
+
+    margin: auto;
+
+    margin-bottom: 3vh;
+
+    text-align: center;
+
+    background-color: var(--colour-button);
+
+    border: 1px solid var(--colour-button);
+    border-radius: 20px;
+
+    padding: 1vh 0;
+}
+
+.conPlayerSelected
+{
+    border-color: var(--colour-text);
+}
+
+#conBalls
+{
+    margin: auto;
+}

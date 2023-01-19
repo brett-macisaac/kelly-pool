@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import GridPoolBalls from "./components/GridPoolBalls.js";
-
-import consts from '../utils/constants.js';
-import utils from "../utils/utils.js";
+import GridPoolBall from "../components/grid_pool_ball/GridPoolBall.js";
+import consts from '../../utils/constants.js';
+import utils from "../../utils/utils.js";
+import "./style_game.css";
 
 function Game()
 {
@@ -313,26 +313,27 @@ function Game()
             
             <h2>Balls</h2>
             <div id = "conBalls">
-                <GridPoolBalls 
+                <GridPoolBall 
                     columns = {3} 
                     clickBall = {clickBall}
                     balls = {balls}
                 />
-
-                {
-                    lNumPlayersIn <= 1 && (
-                        <button id = "btnReplay" onClick = {handleReplay}>Replay</button>
-                    )
-                    // If but one player has balls left, spawn buttons that allows the user to start again (simply make all
-                    // the balls in again). Pass the data down to the GridPoolBalls object, instead of it having its own
-                    // copy of which balls are in which are out.
-                }
-                {
-                    lNumPlayersIn <= 1 && (
-                        <button id = "btnQuit" onClick = {handleQuit}>Quit</button>
-                    )
-                }
             </div>
+
+            {
+                lNumPlayersIn <= 1 && (
+                    <button id = "btnReplay" className = "btnBig" onClick = {handleReplay}>Replay</button>
+                )
+                // If but one player has balls left, spawn buttons that allows the user to start again (simply make all
+                // the balls in again). Pass the data down to the GridPoolBalls object, instead of it having its own
+                // copy of which balls are in which are out.
+            }
+            {
+                lNumPlayersIn <= 1 && (
+                    <button id = "btnQuit" className = "btnBig" onClick = {handleQuit}>Quit</button>
+                )
+            }
+
         </div>
     );
 }

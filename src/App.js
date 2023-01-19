@@ -1,9 +1,10 @@
-import logo from './logo.svg';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import './App.css';
-import GameMenu from './pages/GameMenu.js';
-import Game from './pages/Game.js';
-import PlayerNamesForm from './pages/PlayerNamesForm';
+import GameParams from './pages/game_params/GameParams.js';
+import Game from './pages/game/Game.js';
+import PlayerNames from './pages/player_names/PlayerNames.js';
 
 function App() 
 {
@@ -11,11 +12,12 @@ function App()
     
     <Router>
         <Routes>
-            <Route path = "/" element = { <GameMenu />} />
-            <Route path = "/names" element = { <PlayerNamesForm />} />
+            <Route path = "/" element = { <GameParams />} />
+            <Route path = "/names" element = { <PlayerNames />} />
             <Route path = "/game" element = { <Game />} />
         </Routes>
     </Router>
+
   );
 
 }

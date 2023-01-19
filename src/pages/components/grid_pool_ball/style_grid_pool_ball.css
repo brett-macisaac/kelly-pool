@@ -1,0 +1,9 @@
+.conOuterPoolBall
+{
+    float: left;
+}
+
+.conInnerPoolBall
+{
+    border: 1px solid var(--colour-page);
+}

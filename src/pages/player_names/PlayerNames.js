@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'
-import utils from "../utils/utils.js";
 
-function PlayerNamesForm()
+import utils from "../../utils/utils.js";
+
+import "./style_player_names.css";
+
+function PlayerNames()
 {
     const location = useLocation();
 
@@ -71,9 +74,9 @@ function PlayerNamesForm()
                     }
                 )
             }
-            <button id = "btnStart" onClick = {handlePress}>Start</button>
+            <button id = "btnStart" className = "btnBig" onClick = {handlePress}>Start</button>
         </div>
     );
 }
 
-export default PlayerNamesForm;
+export default PlayerNames;

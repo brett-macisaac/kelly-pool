@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import GridBtnNum from './components/GridBtnNum';
+import GridBtnNum from '../components/grid_btn_num/GridBtnNum.js';
+import consts from '../../utils/constants.js';
+import "./style_game_params.css";
 
-import consts from '../utils/constants.js';
-
-function GameMenu()
+function GameParams()
 {
     const [numPlayers, setNumPlayers] = useState(2);
 
@@ -68,7 +68,7 @@ function GameMenu()
     );
 
     return (
-        <div id = "conGameMenu">
+        <div id = "conGameParams">
 
             <h1 className = "pageHeading">Game Parameters</h1>
 
@@ -82,10 +82,10 @@ function GameMenu()
                 <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} selected = {numBalls} />
             </div>
 
-            <button id = "btnNext" onClick = {handlePlay}>Next</button>
+            <button id = "btnNext" className = "btnBig" onClick = {handlePlay}>Next</button>
 
         </div>
     );
 }
 
-export default GameMenu;
+export default GameParams;

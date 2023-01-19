@@ -1,0 +1,42 @@
+#conPlayerNames
+{
+    /* width: 90vw;
+    max-width: 700px; */
+
+    margin: auto;
+}
+
+.conPlayerName
+{
+    /* width: 75%; */
+
+    text-align: center;
+
+    margin: auto;
+
+    margin-bottom: 20px;
+}
+
+.conPlayerName > input
+{
+    width: 90vw;
+    max-width: 750px;
+
+    font-size: 1.5vh;
+
+    text-align: center;
+
+    background-color: var(--colour-button);
+
+    border: 1px solid var(--colour-button);
+    border-radius: 5px;
+
+    margin-top: 5px;
+
+    padding: 5px;
+}
+
+#btnStart
+{
+    margin-top: 30vh;
+}

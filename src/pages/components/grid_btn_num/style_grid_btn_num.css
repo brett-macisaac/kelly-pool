@@ -1,0 +1,32 @@
+.gridBtnNum
+{
+    /* height: fit-content; */
+    /* clear: both; */
+    margin: auto;
+}
+
+.btnNum
+{
+    display: block;
+    float: left;
+
+    width: 5vh;
+    height: 5vh;
+
+    border: 1px solid var(--colour-button);
+    border-radius: 8px;
+
+    margin: 0.5vh;
+
+    font-size: 3vh;
+    line-height: 5vh;
+
+    background-color: var(--colour-button);
+    /* color: var(--colour-text); */
+}
+
+.btnNumSelected
+{
+    background-color: var(--colour-text);
+    color: var(--colour-button);
+}
