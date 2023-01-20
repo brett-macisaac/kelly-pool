@@ -1,9 +1,9 @@
-.conOuterPoolBall
+.conPoolBall
 {
     float: left;
 }
 
-.conInnerPoolBall
+/* .conInnerPoolBall
 {
     border: 1px solid var(--colour-page);
-}
+} */

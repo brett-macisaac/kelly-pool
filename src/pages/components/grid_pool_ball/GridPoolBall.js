@@ -13,11 +13,11 @@ function GridPoolBall(props)
                 props.balls.map(
                     (ball, aIndex) =>
                     {
-                        const lStyleOuter = { };
+                        const lStyleContainer = { };
 
                         if (aIndex % props.columns === 0)
                         {
-                            lStyleOuter.clear = "left";
+                            lStyleContainer.clear = "left";
                         }
 
                         const lStyleInner = { };
@@ -56,22 +56,17 @@ function GridPoolBall(props)
 
                         return (
                             <div
-                                className = "conOuterPoolBall"
+                                className = "conPoolBall"
                                 key = {ball.number}
-                                style = { lStyleOuter }
+                                style = { lStyleContainer }
                                 onClick = { () => props.clickBall(ball.number) }
                             >
-                                <div 
-                                    className = "conInnerPoolBall"
-                                    style = { {} }
-                                >
-                                    <PoolBall 
-                                        number = {ball.number} 
-                                        potted = {ball.in} 
-                                        selected = {ball.selected}
-                                        margins = {lMargins}
-                                    />
-                                </div>
+                                <PoolBall 
+                                    number = {ball.number} 
+                                    potted = {ball.in} 
+                                    selected = {ball.selected}
+                                    margins = {lMargins}
+                                />
                             </div>
                         );
                     }

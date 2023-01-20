@@ -1,14 +1,34 @@
-#conGame > h2
+#conGameInner
+{
+    width: fit-content;
+    margin: auto;
+}
+
+#conPlayerList > h2, #conBalls > h2
 {
     font-size: 2.5vh;
 }
 
-#conPlayerList
+/*
+* Mobile phone styling.
+*/
+@media screen and (max-width: 768px)
 {
-    width: 90vw;
-    max-width: 800px;
+    #conPlayerList
+    {
+        width: 90vw;
+        margin: auto;
+    }
+}
 
-    margin: auto;
+@media screen and (min-width: 769px)
+{
+    #conPlayerList
+    {
+        width: 40vw;
+        max-width: 800px;
+        float: left;
+    }
 }
 
 .conPlayer
@@ -19,7 +39,7 @@
 
     text-align: center;
 
-    margin: auto;
+    /* margin: auto; */
 
     margin-bottom: 3vh;
 
@@ -33,12 +53,37 @@
     padding: 1vh 0;
 }
 
+#conPlayerList > div:last-child
+{
+    margin-bottom: 0;
+}
+
+#btnReplay, #btnQuit
+{
+    width: 100%;
+
+    margin-top: 0;
+    margin-bottom: 3vh;
+}
+
 .conPlayerSelected
 {
     border-color: var(--colour-text);
 }
 
-#conBalls
+@media screen and (max-width: 480px)
 {
-    margin: auto;
+    #conBalls
+    {
+        margin: auto;
+    }
+}
+
+@media screen and (min-width: 481px)
+{
+    #conBalls
+    {
+        float: left;
+        margin-left: 5vw;
+    }
 }

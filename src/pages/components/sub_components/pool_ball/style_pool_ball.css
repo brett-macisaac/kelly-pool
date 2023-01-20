@@ -1,16 +1,16 @@
 :root
 {
-    --size-pool-ball: 175px;
+    --size-pool-ball: 12vh;
 }
 
 /*
-* Alter the ball size for mobile devices.
+* Mobile phone styling.
 */
-@media screen and (max-width: 480px)
+@media screen and (max-width: 768px)
 {
     :root
     {
-        --size-pool-ball: 20vw;
+        --size-pool-ball: 22vw;
     }
 }
 
@@ -27,7 +27,7 @@
     /* padding: 15px 0px; */
     padding: calc(var(--size-pool-ball) * (1 / 6)) 0px;
 
-    margin: calc(var(--size-pool-ball) * (3 / 10));
+    margin: calc(var(--size-pool-ball) * (35 / 100));
 
     overflow: hidden;
 }

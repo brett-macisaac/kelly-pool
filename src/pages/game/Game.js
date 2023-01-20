@@ -279,60 +279,65 @@ function Game()
     ).length;
 
     return (
-        <div id = "conGame">
+        <div id = "conGame" className = "clearFix">
 
             <h1 className = "pageHeading">Game</h1>
 
-            <h2>Players</h2>
-            <div id = "conPlayerList">
-                {
-                    players.map(
-                        (player, index) => 
-                        {
-                            let lNumBalls = player.balls.filter(el => el.in === false).length;
+            <div id = "conGameInner">
 
-                            if (lNumBalls === 0)
+                <div id = "conPlayerList" className = "clearFix"> 
+                    <h2>Players</h2>
+                    {
+                        players.map(
+                            (player, index) => 
                             {
-                                return;
+                                let lNumBalls = player.balls.filter(el => el.in === false).length;
+
+                                if (lNumBalls === 0)
+                                {
+                                    return;
+                                }
+
+                                // Specify whether a player is out (maybe change background colour).
+                                return (
+                                    <div 
+                                        key = {index}
+                                        className = {index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer"}
+                                        onClick = { () => highlightPlayersBalls(index) }
+                                    >
+                                        { player.name } { `(${lNumBalls})` }
+                                    </div>
+                                );
                             }
+                        )
+                    }
 
-                            // Specify whether a player is out (maybe change background colour).
-                            return (
-                                <div 
-                                    key = {index}
-                                    className = {index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer"}
-                                    onClick = { () => highlightPlayersBalls(index) }
-                                >
-                                    { player.name } { `(${lNumBalls})` }
-                                </div>
-                            );
-                        }
-                    )
-                }
-            </div>
-            
-            <h2>Balls</h2>
-            <div id = "conBalls">
-                <GridPoolBall 
-                    columns = {3} 
-                    clickBall = {clickBall}
-                    balls = {balls}
-                />
-            </div>
+                    {
+                        lNumPlayersIn <= 1 && (
+                            <button id = "btnReplay" className = "btnBig" onClick = {handleReplay}>Replay</button>
+                        )
+                        // If but one player has balls left, spawn buttons that allows the user to start again (simply make all
+                        // the balls in again). Pass the data down to the GridPoolBalls object, instead of it having its own
+                        // copy of which balls are in which are out.
+                    }
+                    
+                    {
+                        lNumPlayersIn <= 1 && (
+                            <button id = "btnQuit" className = "btnBig" onClick = {handleQuit}>Quit</button>
+                        )
+                    }
+                </div>
+                
+                <div id = "conBalls">
+                    <h2>Balls</h2>
+                    <GridPoolBall 
+                        columns = {3} 
+                        clickBall = {clickBall}
+                        balls = {balls}
+                    />
+                </div>
 
-            {
-                lNumPlayersIn <= 1 && (
-                    <button id = "btnReplay" className = "btnBig" onClick = {handleReplay}>Replay</button>
-                )
-                // If but one player has balls left, spawn buttons that allows the user to start again (simply make all
-                // the balls in again). Pass the data down to the GridPoolBalls object, instead of it having its own
-                // copy of which balls are in which are out.
-            }
-            {
-                lNumPlayersIn <= 1 && (
-                    <button id = "btnQuit" className = "btnBig" onClick = {handleQuit}>Quit</button>
-                )
-            }
+            </div>
 
         </div>
     );
