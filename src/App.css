@@ -5,6 +5,9 @@
     --colour-button: black;
 
     --colour-experiment: #7c6a04;
+
+    --max-width-phone: 768px;
+    --min-width-computer: 769px;
 }
 
 *
@@ -40,7 +43,7 @@ body
     width: 100vw;
     height: 5vh;
 
-    font-size: 2vh;
+    font-size: 3vh;
     line-height: 5vh;
 
     padding-left: 5vw;

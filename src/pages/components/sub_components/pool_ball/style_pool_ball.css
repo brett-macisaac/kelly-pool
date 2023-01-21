@@ -1,16 +1,20 @@
-:root
-{
-    --size-pool-ball: 12vh;
-}
 
 /*
-* Mobile phone styling.
+* Mobile phone and portrait styling.
 */
-@media screen and (max-width: 768px)
+@media (orientation: portrait)
 {
     :root
     {
         --size-pool-ball: 22vw;
+    }
+}
+
+@media (orientation: landscape)
+{
+    :root
+    {
+        --size-pool-ball: 12vh;
     }
 }
 
