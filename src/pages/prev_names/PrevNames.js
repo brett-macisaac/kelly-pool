@@ -12,9 +12,9 @@ function PrevNames()
 
     const navigate = useNavigate();
 
-    const lPrevNames = utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames);
-
     const [selectedNames, setSelectedNames] = useState([]);
+
+    const [prevNames, setPrevNames] = useState(utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames));
 
     const handleChange = (aName) =>
     {
@@ -40,9 +40,47 @@ function PrevNames()
         );
     }
 
+    const handleRemove = (aName) =>
+    {
+        setPrevNames(
+            (prev) =>
+            {
+                let lDeepCopy = JSON.parse(JSON.stringify(prev));
+
+                // If the name is selected, remove it from selectedNames.
+                if (selectedNames.includes(aName))
+                {
+                    setSelectedNames(
+                        (prev) =>
+                        {
+                            const lDeepCopy = JSON.parse(JSON.stringify(prev));
+
+                            return lDeepCopy.filter((name) => name !== aName);
+                        }
+                    );
+                }
+
+                // Remove the name.
+                lDeepCopy = lDeepCopy.filter((name) => name !== aName);
+
+                utils.SetInLocalStorage(consts.lclStrgKeyPrevNames, lDeepCopy);
+
+                return lDeepCopy;
+            }
+        );
+    }
+
     const handlePress = () =>
     {
-        navigate("/names", { state: { returningPlayers: selectedNames, numPlayers: location.state.numPlayers, numBalls: location.state.numBalls } });
+        if (selectedNames.length === location.state.numPlayers)
+        {
+            navigate("/game", { state: { playerNames: selectedNames, numBalls: location.state.numBalls } });
+        }
+        else
+        {
+            navigate("/names", { state: { returningPlayers: selectedNames, numPlayers: location.state.numPlayers, numBalls: location.state.numBalls } });
+        }
+
     }
 
     return (
@@ -51,21 +89,24 @@ function PrevNames()
             <p id = "pageInstructs">Select any returning players from below.</p>
 
             {
-                lPrevNames.map(
+                prevNames.map(
                     (name, index) =>
                     {
                         const lId = `chk${name}`;
 
                         return (
-                            <label for = {lId} key = {`${name}-${index}`}>
-                                {name}
-                                <input 
-                                    type = "checkbox" 
-                                    id = {lId} 
-                                    onChange = { () => handleChange(name) }
-                                    checked = { selectedNames.includes(name) }
-                                />
-                            </label>
+                            <div className = "conPrevPlayer">
+                                <label for = {lId} key = {`${name}-${index}`}>
+                                    {name}
+                                    <input 
+                                        type = "checkbox" 
+                                        id = {lId} 
+                                        onChange = { () => handleChange(name) }
+                                        checked = { selectedNames.includes(name) }
+                                    />
+                                </label>
+                                <button className = "btnRemove" onClick = { () => handleRemove(name) }>&mdash;</button>
+                            </div>
                         );
                     }
                 )
