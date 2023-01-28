@@ -35,6 +35,46 @@ function RandomiseArray(aArray)
 
 }
 
+function SetInLocalStorage(aKey, aValue)
+{
+    if (aValue instanceof Map)
+    {
+        console.log("Storing a map in local storage.");
+
+        localStorage[aKey] = JSON.stringify(Array.from(aValue));
+    }
+    else if (aValue instanceof Array)
+    {
+        console.log("Storing an object in local storage.");
+
+        localStorage[aKey] = JSON.stringify(aValue);
+    }
+    else if (typeof aValue === 'object')
+    {
+        console.log("Storing an object in local storage.");
+
+        localStorage[aKey] = JSON.stringify(aValue);
+    }
+    else
+    {
+        localStorage[aKey] = aValue;
+    }
+
+}
+
+function GetFromLocalStorage(aKey)
+{
+    if (!localStorage.hasOwnProperty(aKey))
+    {
+        console.log("localStorage doesn't contain data associated with this key.");
+        return;
+    }
+
+    const lString = localStorage[aKey];
+
+    return JSON.parse(lString);
+}
+
 // An 'enum' for representing comparison operators.
 const CompOps = Object.freeze(
     {
@@ -50,6 +90,8 @@ const utils =
 {
     GetRandom: GetRandom,
     RandomiseArray: RandomiseArray,
+    SetInLocalStorage: SetInLocalStorage,
+    GetFromLocalStorage: GetFromLocalStorage,
     CompOps: CompOps
 };
 

@@ -1,0 +1,40 @@
+#pageInstructs
+{
+    text-align: center;
+
+    margin-top: 3vh;
+}
+
+label
+{
+    display: block;
+
+    margin: auto;
+
+    width: 90vw;
+    max-width: 750px;
+
+    height: 4vh;
+    line-height: 4vh;
+
+    font-size: 2h;
+    /* font-weight: bold; */
+    text-align: center;
+
+    background-color: var(--colour-button);
+
+    border: 1px solid var(--colour-page);
+    border-radius: 5pt;
+
+    margin-top: 3vh;
+}
+
+input[type=checkbox]
+{
+    margin-left: 1vh;
+}
+
+#btnNext
+{
+    margin-top: 30vh;
+}

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import utils from "../../utils/utils.js";
+import consts from "../../utils/constants.js";
 
 import "./style_player_names.css";
 
@@ -11,7 +12,15 @@ function PlayerNames()
 
     const navigate = useNavigate();
 
-    const [names, setNames] = useState(Array(location.state.players).fill(""));
+    const [names, setNames] = useState(
+
+        location.state.returningPlayers 
+            ? 
+                Object.assign(new Array(location.state.numPlayers).fill(""), location.state.returningPlayers) 
+            :
+                Array(location.state.numPlayers).fill("")
+
+    );
 
     const handleChange = (event, aIndex) =>
     {
@@ -46,9 +55,31 @@ function PlayerNames()
             return;
         }
 
+        // If the localStorage array of player names doesn't yet exist, create it.
+        if (!localStorage.hasOwnProperty(consts.lclStrgKeyPrevNames))
+        {
+            utils.SetInLocalStorage(consts.lclStrgKeyPrevNames, []);
+        }
+
+        // An array of all the previous names that have been entered.
+        const lPrevNames = utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames);
+
+        // Store any new names in the localStorage array.
+        for (const name of names)
+        {
+            // Skip any pre-recorded names.
+            if (lPrevNames.includes(name))
+                continue;
+
+            lPrevNames.push(name);
+        }
+
+        // Store the updated names into localStorage.
+        utils.SetInLocalStorage(consts.lclStrgKeyPrevNames, lPrevNames);
+
         utils.RandomiseArray(names);
 
-        navigate("/game", { state: { playerNames: names, numBalls: location.state.balls} });
+        navigate("/game", { state: { playerNames: names, numBalls: location.state.numBalls} });
         //navigate("/game", { state: { players: lPlayers } });
     };
 

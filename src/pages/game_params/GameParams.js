@@ -31,14 +31,23 @@ function GameParams()
         setNumBalls(aNum);
     };
 
-    const handlePlay = () =>
+    const handleNext = () =>
     {
         if (numPlayers <= 0 || numBalls <= 0)
         {
             return;
         }
 
-        navigate("/names", { state: { players: numPlayers, balls: numBalls } });
+        // If previous names have been recorded, go to the page that allows the user to select them; otherwise, go
+        // directly to the names page.
+        if (localStorage.hasOwnProperty(consts.lclStrgKeyPrevNames))
+        {
+            navigate("/prev-names", { state: { numPlayers: numPlayers, numBalls: numBalls } });
+        }
+        else
+        {
+            navigate("/names", { state: { numPlayers: numPlayers, numBalls: numBalls } });
+        }
     };
 
     const maxNumBalls = () =>
@@ -82,10 +91,11 @@ function GameParams()
                 <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} selected = {numBalls} />
             </div>
 
-            <button id = "btnNext" className = "btnBig" onClick = {handlePlay}>Next</button>
+            <button id = "btnNext" className = "btnBig" onClick = {handleNext}>Next</button>
 
         </div>
     );
+
 }
 
 export default GameParams;
