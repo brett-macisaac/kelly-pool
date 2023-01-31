@@ -1,10 +1,23 @@
 #conNumBalls, #conNumPlayers
 {
     margin: auto;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 #btnNext
 {
     margin-top: 30vh;
+}
+
+#conCheckBox
+{
+    margin: auto;
+    margin-top: 3vh;
+
+    padding: 0 10px;
+
+    background-color: var(--colour-button);
+
+    border: 1px solid var(--colour-page);
+    border-radius: 5pt;
 }

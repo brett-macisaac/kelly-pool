@@ -79,7 +79,17 @@ function PlayerNames()
 
         utils.RandomiseArray(names);
 
-        navigate("/game", { state: { playerNames: names, numBalls: location.state.numBalls} });
+        navigate(
+            "/game", 
+            { 
+                state: 
+                { 
+                    playerNames: names, 
+                    numBalls: location.state.numBalls, 
+                    showCounts: location.state.showCounts 
+                } 
+            }
+        );
     };
 
     return (

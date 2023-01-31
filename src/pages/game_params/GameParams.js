@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import GridBtnNum from '../components/grid_btn_num/GridBtnNum.js';
+import CheckBox from '../components/check_box/CheckBox.js';
 import consts from '../../utils/constants.js';
 import "./style_game_params.css";
 
@@ -10,6 +11,8 @@ function GameParams()
     const [numPlayers, setNumPlayers] = useState(2);
 
     const [numBalls, setNumBalls] = useState(0);
+
+    const [showCounts, setShowCounts] = useState(true);
 
     const navigate = useNavigate();
 
@@ -31,6 +34,16 @@ function GameParams()
         setNumBalls(aNum);
     };
 
+    const toggleShowCounts = () =>
+    {
+        setShowCounts(
+            (prev) =>
+            {
+                return !prev;
+            }
+        );
+    }
+
     const handleNext = () =>
     {
         if (numPlayers <= 0 || numBalls <= 0)
@@ -42,11 +55,11 @@ function GameParams()
         // directly to the names page.
         if (localStorage.hasOwnProperty(consts.lclStrgKeyPrevNames))
         {
-            navigate("/prev-names", { state: { numPlayers: numPlayers, numBalls: numBalls } });
+            navigate("/prev-names", { state: { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts } });
         }
         else
         {
-            navigate("/names", { state: { numPlayers: numPlayers, numBalls: numBalls } });
+            navigate("/names", { state: { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts } });
         }
     };
 
@@ -63,11 +76,7 @@ function GameParams()
             console.log("Max balls per player: " + lMaxBallsPerPlayer);
             console.log("Balls per player: " + numBalls);
 
-            if (lMaxBallsPerPlayer === 1)
-            {
-                setNumBalls(1);
-            }
-            else if (lMaxBallsPerPlayer < numBalls)
+            if (lMaxBallsPerPlayer < numBalls)
             {
                 console.log(`The max balls per player ${lMaxBallsPerPlayer} exceeds the current setting of ${numBalls}.`);
                 setNumBalls(lMaxBallsPerPlayer);
@@ -89,6 +98,15 @@ function GameParams()
             <h2 id = "titleNumBalls" >Balls Per Player</h2>
             <div id = "conNumBalls" className = "numSelector">
                 <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} selected = {numBalls} />
+            </div>
+
+            <div id = "conCheckBox">
+                <CheckBox 
+                    id = "chkShowBallCounts"
+                    name = "Show Players' Ball Counts"
+                    onChange = { toggleShowCounts }
+                    checked = { showCounts }
+                />
             </div>
 
             <button id = "btnNext" className = "btnBig" onClick = {handleNext}>Next</button>

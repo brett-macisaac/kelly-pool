@@ -22,15 +22,16 @@ function Game()
                 return {
                     name: aName,
                     in: true,
-                    balls: Array(location.state.numBalls).fill(0).map(
-                        (value) =>
-                        {
-                            return {
-                                number: value,
-                                in: false
-                            }
-                        }
-                    )
+                    balls: Array(location.state.numBalls).fill({ number: 0, in: false })
+                    // balls: Array(location.state.numBalls).fill(0).map(
+                    //     (value) =>
+                    //     {
+                    //         return {
+                    //             number: value,
+                    //             in: false
+                    //         }
+                    //     }
+                    // )
                 }
             }
 
@@ -50,6 +51,17 @@ function Game()
     );
 
     const [indexSelected, setIndexSelected] = useState(-1);
+
+    const EliminatePlayer = (aIndex) =>
+    {
+        alert(`${players[aIndex].name} has been eliminated!`);
+
+        if (aIndex === indexSelected)
+        {
+            highlightPlayersBalls(indexSelected);
+            setIndexSelected(-1);
+        }
+    }
 
     const RandomisePlayers = () =>
     {
@@ -73,6 +85,14 @@ function Game()
                 for (let i = 0; i < lDeepCopy.length; ++i)
                 {
                     lDeepCopy[i].name = lNames[lIndexNames++];
+                }
+
+                // Reset the players' 'balls' arrays.
+                // Players can now add and remove balls mid-game, meaning that their arrays might not be the correct
+                // size at the end of a game.
+                for (let i = 0; i < lDeepCopy.length; ++i)
+                {
+                    lDeepCopy[i].balls = Array(location.state.numBalls).fill({ value: 0, in: false });
                 }
 
                 return lDeepCopy;
@@ -154,21 +174,29 @@ function Game()
                 {
                     for (let j = 0; j < lDeepCopy[i].balls.length; ++j)
                     {
-                        if (lDeepCopy[i].balls[j].number === aBallNumber)
+                        if (lDeepCopy[i].balls[j].number !== aBallNumber)
+                            continue;
+
+                        lDeepCopy[i].balls[j].in = !(lDeepCopy[i].balls[j].in);
+
+                        let lNumBalls = lDeepCopy[i].balls.filter(el => el.in === false).length;
+
+                        if (lNumBalls === 0)
                         {
-                            lDeepCopy[i].balls[j].in = !(lDeepCopy[i].balls[j].in);
+                            // alert(`${lDeepCopy[i].name} has been eliminated!`);
 
-                            let lNumBalls = lDeepCopy[i].balls.filter(el => el.in === false).length;
+                            // if (i === indexSelected)
+                            // {
+                            //     highlightPlayersBalls(indexSelected);
+                            //     setIndexSelected(-1);
+                            // }
 
-                            if (lNumBalls === 0)
-                            {
-                                alert(`${lDeepCopy[i].name} has been eliminated!`);
-                            }
-
-                            lBallFound = true;
-
-                            break;
+                            EliminatePlayer(i);
                         }
+
+                        lBallFound = true;
+
+                        break;
                     }
 
                     if (lBallFound)
@@ -218,7 +246,7 @@ function Game()
                 // An array of the balls that were deselected. These balls are unavailable for selection.
                 const lBallNumsDeselected = [];
 
-                // Deselect any currently selected balls.
+                // Deselect any currently selected balls and record them in lBallNumsDeselected.
                 for (let i = 0; i < lDeepCopy.length; ++i)
                 {
                     if (lDeepCopy[i].selected)
@@ -244,18 +272,156 @@ function Game()
                     lDeepCopy[lNumBall - 1].selected = true;
                 }
 
-                console.log("Deep Copy of Balls:");
-                console.log(lDeepCopy);
-
                 return lDeepCopy;
             }
 
         );
     };
 
+    const handleAddBall = () =>
+    {
+        // If there's balls remaining that have yet to be assigned to a player, pick a random one and assign it to the 
+        // selected player.
+
+        // Balls that haven't been potted and are not assigned to a player.
+        const lBallsAvailable = balls.filter(
+            (ball) =>
+            {
+                // If the ball is already potted, don't include this ball (irrespetive of whether it's assigned).
+                if (ball.in)
+                    return false;
+
+                let lIsBallAssigned = false;
+
+                for (const player of players)
+                {
+                    for (const b of player.balls)
+                    {
+                        if (b.number === ball.number)
+                        {
+                            lIsBallAssigned = true;
+                            break;
+                        }
+                    }
+
+                    if (lIsBallAssigned)
+                        break;
+                }
+
+                return !lIsBallAssigned;
+            }
+        );
+
+        console.log("Available balls: ");
+        console.log(lBallsAvailable);
+
+        if (lBallsAvailable.length === 0)
+            return;
+
+        // A random ball from lBallsAvailable.
+        const lBallRandom = lBallsAvailable[utils.GetRandom(0, lBallsAvailable.length - 1)];
+
+        setPlayers(
+            (prev) =>
+            {
+                const lDeepCopy = JSON.parse(JSON.stringify(prev));
+
+                lDeepCopy[indexSelected].balls.push({ number: lBallRandom.number, in: false })
+
+                return lDeepCopy;
+            }
+        );
+
+        setBalls(
+            (prev) =>
+            {
+                const lDeepCopy = JSON.parse(JSON.stringify(prev));
+
+                return lDeepCopy.map(
+                    (ball) =>
+                    {
+                        if (ball.number === lBallRandom.number)
+                            ball.selected = true;
+
+                        return ball;
+                    }
+                );
+            }
+        );
+
+    }
+
+    const handleRemoveBall = () =>
+    {
+        let lBallRemoved = 0;
+
+        setPlayers(
+            (prev) =>
+            {
+                const lDeepCopy = JSON.parse(JSON.stringify(prev));
+
+                // The selected player's balls.
+                let lBalls = lDeepCopy[indexSelected].balls;
+
+                // The indexes of the player's balls that haven't been potted.
+                let lIndexesUnpotted = [];
+
+                // Populate lIndexesUnpotted.
+                lBalls.forEach(
+                    (ball, index) => 
+                    { 
+                        if (!ball.in)
+                        {
+                            lIndexesUnpotted.push(index);
+                        }
+                    }
+                );
+
+                // A random value of lIndexesUnpotted.
+                let lIndexRandom = lIndexesUnpotted[utils.GetRandom(0, lIndexesUnpotted.length - 1)];
+
+                // Record the ball that will be removed.
+                lBallRemoved = lBalls[lIndexRandom].number;
+
+                // Remove the card at the random index.
+                lDeepCopy[indexSelected].balls = lBalls.filter((ball, index) => index !== lIndexRandom);
+
+                // Eliminate the player if they have no unpotted balls left.
+                if (lDeepCopy[indexSelected].balls.length === 0 || 
+                    lDeepCopy[indexSelected].balls.filter(ball => ball.in === false).length === 0)
+                {
+                    EliminatePlayer(indexSelected);
+                }
+
+                // Unselect the ball.
+                setBalls(
+                    (prev) =>
+                    {
+                        const lDeepCopy = JSON.parse(JSON.stringify(prev));
+        
+                        return lDeepCopy.map(
+                            (ball) =>
+                            {
+                                if (ball.number === lBallRemoved)
+                                    ball.selected = false;
+        
+                                return ball;
+                            }
+                        );
+                    }
+                );
+
+                return lDeepCopy;
+            }
+        );
+
+    }
+
     const handleReplay = () =>
     {
         // Balls and the players' order should be randomised.
+
+        // Given that players have the option to add/remove balls, their 'balls' arrays should be reset.
 
         RandomisePlayers();
 
@@ -305,7 +471,7 @@ function Game()
                                         className = {index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer"}
                                         onClick = { () => highlightPlayersBalls(index) }
                                     >
-                                        { player.name } { `(${lNumBalls})` }
+                                        { player.name } { location.state.showCounts ? `(${lNumBalls})` : "" }
                                     </div>
                                 );
                             }
@@ -316,9 +482,6 @@ function Game()
                         lNumPlayersIn <= 1 && (
                             <button id = "btnReplay" className = "btnBig" onClick = {handleReplay}>Replay</button>
                         )
-                        // If but one player has balls left, spawn buttons that allows the user to start again (simply make all
-                        // the balls in again). Pass the data down to the GridPoolBalls object, instead of it having its own
-                        // copy of which balls are in which are out.
                     }
                     
                     {
@@ -335,6 +498,18 @@ function Game()
                         clickBall = {clickBall}
                         balls = {balls}
                     />
+
+                    {
+                        indexSelected >= 0 && (
+                            <button id = "btnAddBall" className = "btnBig" onClick = {handleAddBall}>Add Ball</button>
+                        )
+                    }
+
+                    {
+                        indexSelected >= 0 && (
+                            <button id = "btnRemoveBall" className = "btnBig" onClick = {handleRemoveBall}>Remove Ball</button>
+                        )
+                    }
                 </div>
 
             </div>

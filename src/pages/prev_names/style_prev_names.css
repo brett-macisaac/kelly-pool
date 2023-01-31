@@ -9,6 +9,8 @@
 {
     margin: auto;
 
+    padding-left: 20px;
+
     width: 90vw;
     max-width: 750px;
 
@@ -18,24 +20,6 @@
     border-radius: 5pt;
 
     margin-top: 3vh;
-}
-
-label
-{
-    display: inline-block;
-
-    /* margin: auto; */
-
-    height: 4vh;
-    line-height: 4vh;
-
-    font-size: 2vh;
-    /* font-weight: bold; */
-    /* text-align: center; */
-
-    margin-left: 20px;
-
-    background-color: var(--colour-button);
 }
 
 .btnRemove
@@ -57,11 +41,6 @@ label
     border-radius: 5pt;
 
     padding: 0 1.5vh;
-}
-
-input[type=checkbox]
-{
-    margin-left: 1vh;
 }
 
 #btnNext

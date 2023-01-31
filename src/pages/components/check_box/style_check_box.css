@@ -1,0 +1,22 @@
+label
+{
+    display: inline-block;
+
+    /* margin: auto; */
+
+    height: 4vh;
+    line-height: 4vh;
+
+    font-size: 2vh;
+    /* font-weight: bold; */
+    /* text-align: center; */
+
+    /* margin-left: 20px; */
+
+    background-color: var(--colour-button);
+}
+
+input[type=checkbox]
+{
+    margin-left: 1vh;
+}

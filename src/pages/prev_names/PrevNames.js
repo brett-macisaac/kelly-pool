@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import CheckBox from '../components/check_box/CheckBox.js';
+
 import utils from "../../utils/utils.js";
 import consts from "../../utils/constants.js";
 
@@ -74,11 +76,32 @@ function PrevNames()
     {
         if (selectedNames.length === location.state.numPlayers)
         {
-            navigate("/game", { state: { playerNames: selectedNames, numBalls: location.state.numBalls } });
+            navigate(
+                "/game", 
+                {
+                    state: 
+                    {
+                        playerNames: selectedNames, 
+                        numBalls: location.state.numBalls, 
+                        showCounts: location.state.showCounts 
+                    } 
+                }
+            );
         }
         else
         {
-            navigate("/names", { state: { returningPlayers: selectedNames, numPlayers: location.state.numPlayers, numBalls: location.state.numBalls } });
+            navigate(
+                "/names", 
+                { 
+                    state: 
+                    { 
+                        returningPlayers: selectedNames, 
+                        numPlayers: location.state.numPlayers, 
+                        numBalls: location.state.numBalls, 
+                        showCounts: location.state.showCounts 
+                    } 
+                }
+            );
         }
 
     }
@@ -95,16 +118,13 @@ function PrevNames()
                         const lId = `chk${name}`;
 
                         return (
-                            <div className = "conPrevPlayer">
-                                <label for = {lId} key = {`${name}-${index}`}>
-                                    {name}
-                                    <input 
-                                        type = "checkbox" 
-                                        id = {lId} 
-                                        onChange = { () => handleChange(name) }
-                                        checked = { selectedNames.includes(name) }
-                                    />
-                                </label>
+                            <div className = "conPrevPlayer" key = {`${name}-${index}`}>
+                                <CheckBox 
+                                    id = {lId}
+                                    name = {name}
+                                    onChange = { () => handleChange(name) }
+                                    checked = { selectedNames.includes(name) }
+                                />
                                 <button className = "btnRemove" onClick = { () => handleRemove(name) }>&mdash;</button>
                             </div>
                         );
