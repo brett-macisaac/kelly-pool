@@ -462,11 +462,11 @@ function Game()
     let lCountPlayersBalls = 0;
 
     return (
-        <div id = "conGame" className = "clearFix">
+        <div id = "conGame" className = "pageContainer">
 
             <h1 className = "pageHeading">Game</h1>
 
-            <div id = "conGameInner">
+            <div id = "conGameInner" className = "clearFix">
 
                 <div id = "conPlayerList" className = "clearFix"> 
                     <h2>Players { `(${lNumPlayersIn})` }</h2>

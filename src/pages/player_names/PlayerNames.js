@@ -93,7 +93,7 @@ function PlayerNames()
     };
 
     return (
-        <div id = "conPlayerNames">
+        <div id = "conPlayerNames" className = "pageContainer">
             <h1 className = "pageHeading">Player Names</h1>
             {
                 names.map(

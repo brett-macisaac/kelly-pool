@@ -86,7 +86,7 @@ function GameParams()
     );
 
     return (
-        <div id = "conGameParams">
+        <div id = "conGameParams" className = "pageContainer">
 
             <h1 className = "pageHeading">Game Parameters</h1>
 

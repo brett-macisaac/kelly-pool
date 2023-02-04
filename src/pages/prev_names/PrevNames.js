@@ -107,7 +107,7 @@ function PrevNames()
     }
 
     return (
-        <div id = "conPrevNames">
+        <div id = "conPrevNames" className = "pageContainer">
             <h1 className = "pageHeading">Returning Players</h1>
             <p id = "pageInstructs">Select any returning players from below.</p>
 

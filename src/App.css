@@ -30,6 +30,8 @@ body
 
 #root
 {
+    width: 100%;
+
     padding-bottom: 2vh;
 
     margin: auto;
@@ -37,7 +39,7 @@ body
 
 .pageHeading
 {
-    width: 100vw;
+    width: 100%;
     height: 5vh;
 
     font-size: 3vh;
@@ -46,6 +48,11 @@ body
     padding-left: 5vw;
 
     background-color: var(--colour-button);
+}
+
+.pageContainer
+{
+    width: 100%;
 }
 
 h2
