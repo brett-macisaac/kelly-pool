@@ -69,6 +69,13 @@
     padding: 1vh 0;
 }
 
+#conTotalPlayersBalls
+{
+    width: 100%;
+    padding-top: 3vh;
+    border-top: 2px solid white;
+}
+
 #conPlayerList > div:last-child
 {
     margin-bottom: 0;

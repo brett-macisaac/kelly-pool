@@ -58,6 +58,7 @@ function Game()
 
         if (aIndex === indexSelected)
         {
+            // Toggle the highlight on their balls.
             highlightPlayersBalls(indexSelected);
             setIndexSelected(-1);
         }
@@ -177,6 +178,9 @@ function Game()
                         if (lDeepCopy[i].balls[j].number !== aBallNumber)
                             continue;
 
+                        // If the ball has been potted (i.e. wasn't in but now is).
+                        const lBallPotted = !lDeepCopy[i].balls[j].in;
+
                         lDeepCopy[i].balls[j].in = !(lDeepCopy[i].balls[j].in);
 
                         let lNumBalls = lDeepCopy[i].balls.filter(el => el.in === false).length;
@@ -192,6 +196,10 @@ function Game()
                             // }
 
                             EliminatePlayer(i);
+                        }
+                        else if (location.state.showCounts && lBallPotted)
+                        {
+                            alert(`${lDeepCopy[i].name} has lost a ball!`);
                         }
 
                         lBallFound = true;
@@ -278,13 +286,10 @@ function Game()
         );
     };
 
-    const handleAddBall = () =>
+    /* Returns an array of the balls that are unassigned and not yet potted. */
+    const availableBalls = () =>
     {
-        // If there's balls remaining that have yet to be assigned to a player, pick a random one and assign it to the 
-        // selected player.
-
-        // Balls that haven't been potted and are not assigned to a player.
-        const lBallsAvailable = balls.filter(
+        return balls.filter(
             (ball) =>
             {
                 // If the ball is already potted, don't include this ball (irrespetive of whether it's assigned).
@@ -311,6 +316,15 @@ function Game()
                 return !lIsBallAssigned;
             }
         );
+    }
+
+    const handleAddBall = () =>
+    {
+        // If there's balls remaining that have yet to be assigned to a player, pick a random one and assign it to the 
+        // selected player.
+
+        // Balls that haven't been potted and are not assigned to a player.
+        const lBallsAvailable = availableBalls();
 
         console.log("Available balls: ");
         console.log(lBallsAvailable);
@@ -444,6 +458,9 @@ function Game()
 
     ).length;
 
+    // The number of players' balls that are not yet potted.
+    let lCountPlayersBalls = 0;
+
     return (
         <div id = "conGame" className = "clearFix">
 
@@ -452,7 +469,7 @@ function Game()
             <div id = "conGameInner">
 
                 <div id = "conPlayerList" className = "clearFix"> 
-                    <h2>Players</h2>
+                    <h2>Players { `(${lNumPlayersIn})` }</h2>
                     {
                         players.map(
                             (player, index) => 
@@ -460,9 +477,9 @@ function Game()
                                 let lNumBalls = player.balls.filter(el => el.in === false).length;
 
                                 if (lNumBalls === 0)
-                                {
                                     return;
-                                }
+
+                                lCountPlayersBalls += lNumBalls;
 
                                 // Specify whether a player is out (maybe change background colour).
                                 return (
@@ -475,6 +492,18 @@ function Game()
                                     </div>
                                 );
                             }
+                        )
+                    }
+
+                    {
+                        (location.state.showCounts && lNumPlayersIn > 1) && (
+                            <div id = "conTotalPlayersBalls">
+                                <div 
+                                    className = "conPlayer"
+                                >
+                                    <b>Total</b>: { lCountPlayersBalls }
+                                </div>
+                            </div>
                         )
                     }
 
@@ -492,7 +521,7 @@ function Game()
                 </div>
                 
                 <div id = "conBalls">
-                    <h2>Balls</h2>
+                    <h2>Balls { `(${balls.filter((ball) => !ball.in).length})` }</h2>
                     <GridPoolBall 
                         columns = {3} 
                         clickBall = {clickBall}
@@ -500,7 +529,7 @@ function Game()
                     />
 
                     {
-                        indexSelected >= 0 && (
+                        (indexSelected >= 0 && (availableBalls()).length > 0) && (
                             <button id = "btnAddBall" className = "btnBig" onClick = {handleAddBall}>Add Ball</button>
                         )
                     }
