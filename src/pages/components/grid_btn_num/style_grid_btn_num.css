@@ -7,19 +7,23 @@
 
 .btnNum
 {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     float: left;
 
-    width: 5vh;
-    height: 5vh;
+    /* width: 5vh;
+    height: 5vh; */
+    width: 43px;
+    height: 43px;
 
-    border: 1px solid var(--colour-button);
-    border-radius: 8px;
+    border: none;
+    border-radius: 0.5em;
 
-    margin: 0.5vh;
+    margin: 5px;
 
-    font-size: 3vh;
-    line-height: 5vh;
+    font-size: 20px;
 
     background-color: var(--colour-button);
     /* color: var(--colour-text); */

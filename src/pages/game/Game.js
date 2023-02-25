@@ -6,6 +6,8 @@ import consts from '../../utils/constants.js';
 import utils from "../../utils/utils.js";
 import "./style_game.css";
 
+import gColoursPoolBalls from "../../utils/colours_pool_balls.js";
+
 function Game()
 {
     const navigate = useNavigate();
@@ -461,6 +463,16 @@ function Game()
     // The number of players' balls that are not yet potted.
     let lCountPlayersBalls = 0;
 
+    let lLengthLongestName = 0;
+
+    for (const player of players)
+    {
+        if (player.name.length > lLengthLongestName)
+        {
+            lLengthLongestName = player.name.length;
+        }
+    }
+
     return (
         <div id = "conGame" className = "pageContainer">
 
@@ -468,8 +480,17 @@ function Game()
 
             <div id = "conGameInner" className = "clearFix">
 
-                <div id = "conPlayerList" className = "clearFix"> 
-                    <h2>Players { `(${lNumPlayersIn})` }</h2>
+                <div id = "conPlayerList" className = "clearFix">
+
+                    {/* <h2>Players { `(${lNumPlayersIn})` }</h2> */}
+
+                    <div 
+                        id = "conTotalPlayers" className = "conPlayer"
+                    >
+                        <div className = "playerName" ><b>Players</b></div>
+                        <div className = "numBallsCount">{ lNumPlayersIn }</div>
+                    </div>
+
                     {
                         players.map(
                             (player, index) => 
@@ -485,10 +506,23 @@ function Game()
                                 return (
                                     <div 
                                         key = {index}
-                                        className = {index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer"}
+                                        className = { index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer" }
                                         onClick = { () => highlightPlayersBalls(index) }
                                     >
-                                        { player.name } { location.state.showCounts ? `(${lNumBalls})` : "" }
+                                        <div className = "playerName" >{ player.name }</div>
+
+                                        {
+                                            location.state.showCounts && ( 
+                                                <div 
+                                                    className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
+                                                    style = { { backgroundColor: gColoursPoolBalls[lNumBalls].primary } }
+                                                >
+                                                    <div className = "numCircle">
+                                                        { lNumBalls }
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
                                     </div>
                                 );
                             }
@@ -501,7 +535,8 @@ function Game()
                                 <div 
                                     className = "conPlayer"
                                 >
-                                    <b>Total</b>: { lCountPlayersBalls }
+                                    <div className = "playerName" ><b>Total</b></div>
+                                    <div className = "numBallsCount">{ lCountPlayersBalls }</div>
                                 </div>
                             </div>
                         )
@@ -518,15 +553,25 @@ function Game()
                             <button id = "btnQuit" className = "btnBig" onClick = {handleQuit}>Quit</button>
                         )
                     }
+
                 </div>
                 
                 <div id = "conBalls">
-                    <h2>Balls { `(${balls.filter((ball) => !ball.in).length})` }</h2>
-                    <GridPoolBall 
-                        columns = {3} 
-                        clickBall = {clickBall}
-                        balls = {balls}
-                    />
+
+                    <div 
+                        id = "conTotalBalls" className = "conPlayer"
+                    >
+                        <div className = "playerName" ><b>Balls</b></div>
+                        <div className = "numBallsCount">{ balls.filter((ball) => !ball.in).length }</div>
+                    </div>
+
+                    <div id = "conGridPoolBall">
+                        <GridPoolBall 
+                            columns = {3} 
+                            clickBall = {clickBall}
+                            balls = {balls}
+                        />
+                    </div>
 
                     {
                         (indexSelected >= 0 && (availableBalls()).length > 0) && (

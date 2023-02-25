@@ -94,27 +94,39 @@ function PlayerNames()
 
     return (
         <div id = "conPlayerNames" className = "pageContainer">
+
             <h1 className = "pageHeading">Player Names</h1>
-            {
-                names.map(
-                    (name, index) =>
-                    {
-                        return (
-                            <div className = "conPlayerName" key = {index}>
-                                <h2>Player {index + 1}</h2>
-                                <input 
-                                    type = "text" 
-                                    placeholder = "Name" 
-                                    value = {name} 
-                                    onChange = { (event) => handleChange(event, index) }
-                                    maxLength = "20"
-                                />
-                            </div>
-                        );
-                    }
-                )
-            }
-            <button id = "btnStart" className = "btnBig" onClick = {handlePress}>Start</button>
+
+            <div className = "content hideScrollBar">
+
+                {
+                    names.map(
+                        (name, index) =>
+                        {
+                            return (
+                                <div className = "conPlayerName" key = {index}>
+                                    <h2>Player {index + 1}</h2>
+                                    <input 
+                                        type = "text" 
+                                        placeholder = "Name" 
+                                        value = {name} 
+                                        onChange = { (event) => handleChange(event, index) }
+                                        maxLength = "20"
+                                    />
+                                </div>
+                            );
+                        }
+                    )
+                }
+
+            </div>
+
+            <div className = "footer">
+
+                <button id = "btnStart" className = "btnBig" onClick = {handlePress}>Start</button>
+
+            </div>
+
         </div>
     );
 }

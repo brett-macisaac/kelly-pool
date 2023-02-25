@@ -12,15 +12,15 @@
 .conPlayerName > input
 {
     width: 90vw;
-    max-width: 750px;
+    max-width: 600px;
 
-    font-size: 1.5vh;
+    font-size: inherit;
 
     text-align: center;
 
     background-color: var(--colour-button);
 
-    border: 1px solid var(--colour-button);
+    border: none;
     border-radius: 5px;
 
     margin-top: 5px;
@@ -28,7 +28,8 @@
     padding: 5px;
 }
 
-#btnStart
+/* Remove default styling when a text-box is clicked (i.e. when it has focus) */
+.conPlayerName > input:focus
 {
-    margin-top: 30vh;
+    outline: none;
 }

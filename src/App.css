@@ -5,6 +5,9 @@
     --colour-button: black;
 
     --colour-experiment: #7c6a04;
+
+    --height-header: 50px;
+    --height-footer: 80px
 }
 
 *
@@ -14,7 +17,7 @@
     box-sizing: border-box;
 
     color: var(--colour-text);
-    font-family: Verdana, Tahoma, sans-serif;
+    font-family: "Courier New", Verdana, Tahoma, sans-serif;
 }
 
 html
@@ -31,21 +34,27 @@ body
 #root
 {
     width: 100%;
-
-    padding-bottom: 2vh;
-
-    margin: auto;
 }
 
 .pageHeading
 {
+    /* Centre the text */
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    position: sticky;
+    top: 0;
+
     width: 100%;
-    height: 5vh;
+    height: var(--height-header);
 
-    font-size: 3vh;
-    line-height: 5vh;
+    font-size: 25px;
 
-    padding-left: 5vw;
+    /* Old vertical centering technique */
+    /* line-height: var(--height-header); */
+
+    padding-left: 1.25em;
 
     background-color: var(--colour-button);
 }
@@ -55,14 +64,37 @@ body
     width: 100%;
 }
 
+.content
+{
+    height: calc(100vh - var(--height-footer) - var(--height-header));
+    width: fit-content;
+
+    overflow-y: scroll;
+
+    margin: auto !important;
+
+    font-size: 16px;
+}
+
+.footer
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 100%;
+
+    height: var(--height-footer);
+}
+
 h2
 {
     text-align: center;
 
-    font-size: 2vh;
+    font-size: 20px;
 
-    margin-top: 3vh;
-    margin-bottom: 1vh;
+    margin-top: 30px;
+    margin-bottom: 15px;
 }
 
 div
@@ -90,16 +122,17 @@ div
     display: block;
 
     width: 90%;
-    max-width: 750px;
+    max-width: 500px;
     height: 5vh;
 
     margin: auto;
 
-    margin-top: 40px;
-
     background-color: var(--colour-button);
 
-    font-size: 3vh;
+    font-size: 20px;
+    font-weight: 600;
+
+    /* Centre text */
     line-height: 5vh;
 
     border: 1px solid var(--colour-button);
@@ -114,4 +147,14 @@ div
 .btnBig:active
 {
     background-color: var(--colour-page);
+}
+
+/* Prevents the scrollbar from being displayed. */
+.hideScrollBar
+{
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* IE 10+ */
+    -ms-overflow-style: none;
 }

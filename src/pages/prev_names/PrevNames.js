@@ -8,6 +8,13 @@ import consts from "../../utils/constants.js";
 
 import "./style_prev_names.css";
 
+function GetPrevNames()
+{
+    const lPrevNames = utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames);
+
+    return lPrevNames ? lPrevNames : [];
+}
+
 function PrevNames()
 {
     const location = useLocation();
@@ -16,7 +23,7 @@ function PrevNames()
 
     const [selectedNames, setSelectedNames] = useState([]);
 
-    const [prevNames, setPrevNames] = useState(utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames));
+    const [prevNames, setPrevNames] = useState(GetPrevNames());
 
     const handleChange = (aName) =>
     {
@@ -106,33 +113,54 @@ function PrevNames()
 
     }
 
+    let lLengthLongestName = 0;
+
+    for (const prevName of prevNames)
+    {
+        if (prevName.length > lLengthLongestName)
+        {
+            lLengthLongestName = prevName.length;
+        }
+    }
+
     return (
         <div id = "conPrevNames" className = "pageContainer">
+
             <h1 className = "pageHeading">Returning Players</h1>
-            <p id = "pageInstructs">Select any returning players from below.</p>
 
-            {
-                prevNames.map(
-                    (name, index) =>
-                    {
-                        const lId = `chk${name}`;
+            <div className = "content hideScrollBar">
 
-                        return (
-                            <div className = "conPrevPlayer" key = {`${name}-${index}`}>
-                                <CheckBox 
-                                    id = {lId}
-                                    name = {name}
-                                    onChange = { () => handleChange(name) }
-                                    checked = { selectedNames.includes(name) }
-                                />
-                                <button className = "btnRemove" onClick = { () => handleRemove(name) }>&mdash;</button>
-                            </div>
-                        );
-                    }
-                )
-            }
+                <p id = "pageInstructs">Select returning players from below</p>
 
-            <button id = "btnNext" className = "btnBig" onClick = {handlePress}>Next</button>
+                {
+                    prevNames.map(
+                        (name, index) =>
+                        {
+                            const lId = `chk${name}`;
+
+                            return (
+                                <div className = "conPrevPlayer" key = {`${name}-${index}`}>
+                                    <CheckBox 
+                                        id = {lId}
+                                        name = { name.padEnd(lLengthLongestName, ' ') }
+                                        onChange = { () => handleChange(name) }
+                                        checked = { selectedNames.includes(name) }
+                                    />
+                                    <button className = "btnRemove" onClick = { () => handleRemove(name) }>&mdash;</button>
+                                </div>
+                            );
+                        }
+                    )
+                }
+
+            </div>
+
+            <div className = "footer">
+
+                <button id = "btnNext" className = "btnBig" onClick = { handlePress }>Next</button>
+
+            </div>
+
         </div>
     );
 }

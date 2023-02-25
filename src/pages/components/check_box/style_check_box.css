@@ -1,22 +1,17 @@
 label
 {
-    display: inline-block;
+    display: flex;
 
-    /* margin: auto; */
+    /* Centre items */
+    align-items: center;
+    justify-content: start;
 
-    height: 4vh;
-    line-height: 4vh;
-
-    font-size: 2vh;
-    /* font-weight: bold; */
-    /* text-align: center; */
-
-    /* margin-left: 20px; */
+    font-size: inherit;
 
     background-color: var(--colour-button);
 }
 
 input[type=checkbox]
 {
-    margin-left: 1vh;
+    margin-left: 1em;
 }

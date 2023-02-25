@@ -5,8 +5,8 @@ import "./style_check_box.css";
 function CheckBox({ id, name, onChange, checked })
 {
     return (
-        <label for = {id}>
-            {name}
+        <label htmlFor = {id}>
+            <pre>{name}</pre>
             <input 
                 type = "checkbox" 
                 id = {id} 

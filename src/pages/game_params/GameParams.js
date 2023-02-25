@@ -76,9 +76,8 @@ function GameParams()
             console.log("Max balls per player: " + lMaxBallsPerPlayer);
             console.log("Balls per player: " + numBalls);
 
-            if (lMaxBallsPerPlayer < numBalls)
+            if (lMaxBallsPerPlayer < numBalls || lMaxBallsPerPlayer === 1)
             {
-                console.log(`The max balls per player ${lMaxBallsPerPlayer} exceeds the current setting of ${numBalls}.`);
                 setNumBalls(lMaxBallsPerPlayer);
             }
         },
@@ -90,26 +89,34 @@ function GameParams()
 
             <h1 className = "pageHeading">Game Parameters</h1>
 
-            <h2>Number of Players</h2>
-            <div id = "conNumPlayers" className = "numSelector">
-                <GridBtnNum size = {14} columns = {4} minNum = {2} selectNum = {selectNumPlayers} selected = {numPlayers} />
+            <div className = "content hideScrollBar">
+
+                <h2>Number of Players</h2>
+                <div id = "conNumPlayers" className = "numSelector">
+                    <GridBtnNum size = {14} columns = {4} minNum = {2} selectNum = {selectNumPlayers} selected = {numPlayers} />
+                </div>
+
+                <h2 id = "titleNumBalls" >Balls Per Player</h2>
+                <div id = "conNumBalls" className = "numSelector">
+                    <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} selected = {numBalls} />
+                </div>
+
+                <div id = "conCheckBox">
+                    <CheckBox 
+                        id = "chkShowBallCounts"
+                        name = "Show Players' Ball Counts"
+                        onChange = { toggleShowCounts }
+                        checked = { showCounts }
+                    />
+                </div>
+
             </div>
 
-            <h2 id = "titleNumBalls" >Balls Per Player</h2>
-            <div id = "conNumBalls" className = "numSelector">
-                <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} selected = {numBalls} />
-            </div>
+            <div className = "footer">
 
-            <div id = "conCheckBox">
-                <CheckBox 
-                    id = "chkShowBallCounts"
-                    name = "Show Players' Ball Counts"
-                    onChange = { toggleShowCounts }
-                    checked = { showCounts }
-                />
-            </div>
+                <button id = "btnNext" className = "btnBig" onClick = { handleNext }>Next</button>
 
-            <button id = "btnNext" className = "btnBig" onClick = {handleNext}>Next</button>
+            </div>
 
         </div>
     );
