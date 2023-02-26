@@ -23,17 +23,8 @@ function Game()
             {
                 return {
                     name: aName,
-                    in: true,
-                    balls: Array(location.state.numBalls).fill({ number: 0, in: false })
-                    // balls: Array(location.state.numBalls).fill(0).map(
-                    //     (value) =>
-                    //     {
-                    //         return {
-                    //             number: value,
-                    //             in: false
-                    //         }
-                    //     }
-                    // )
+                    balls: Array(location.state.numBalls).fill({ number: 0, in: false }),
+                    nthPlace: -1
                 }
             }
 
@@ -54,6 +45,18 @@ function Game()
 
     const [indexSelected, setIndexSelected] = useState(-1);
 
+    const NumPlayersIn = () =>
+    {
+        return players.filter(
+            (player) =>
+            {
+                const lAtLeastOneBallIn = player.balls.filter(ball => !ball.in).length > 0;
+    
+                return lAtLeastOneBallIn;
+            }
+        ).length;
+    }
+
     const EliminatePlayer = (aIndex) =>
     {
         alert(`${players[aIndex].name} has been eliminated!`);
@@ -64,6 +67,22 @@ function Game()
             highlightPlayersBalls(indexSelected);
             setIndexSelected(-1);
         }
+    }
+
+    const ReturnPlayer = (aPlayers, aIndex) =>
+    {
+        // Adjust the nthPlace variable of other players (i.e. any players who have a lower place).
+        for (const player of aPlayers)
+        {
+            if (player.nthPlace <= 0)
+                continue;
+
+            if (player.nthPlace < aPlayers[aIndex].nthPlace)
+                player.nthPlace += 1;
+        }
+
+        if (aPlayers[aIndex].nthPlace !== 1)
+            aPlayers[aIndex].nthPlace = -1;
     }
 
     const RandomisePlayers = () =>
@@ -137,12 +156,11 @@ function Game()
 
                 for (let i = 0; i < lDeepCopy.length; ++i)
                 {
-                    lDeepCopy[i].in = true;
-
                     for (let j = 0; j < lDeepCopy[i].balls.length; ++j)
                     {
                         lDeepCopy[i].balls[j].number = lBalls[lIndexBalls++];
                         lDeepCopy[i].balls[j].in = false;
+                        lDeepCopy[i].balls[j].nthPlace = -1;
                     }
                 }
 
@@ -151,8 +169,6 @@ function Game()
 
         );
     };
-
-    
 
     // Initial randomisation of balls.
     useEffect(
@@ -189,19 +205,41 @@ function Game()
 
                         if (lNumBalls === 0)
                         {
-                            // alert(`${lDeepCopy[i].name} has been eliminated!`);
+                            const lNumPlayers = NumPlayersIn();
 
-                            // if (i === indexSelected)
-                            // {
-                            //     highlightPlayersBalls(indexSelected);
-                            //     setIndexSelected(-1);
-                            // }
-
+                            lDeepCopy[i].nthPlace = lNumPlayers;
                             EliminatePlayer(i);
+
+                            // If the player who just lost placed 2nd, that means there's only one player left.
+                            if (lNumPlayers === 2)
+                            {
+                                // Set the place of the only remaining player to 1.
+                                for (const player of lDeepCopy)
+                                {
+                                    if (player.balls.filter(el => !el.in).length === 0)
+                                        continue;
+
+                                    player.nthPlace = 1;
+                                }
+                            }
                         }
                         else if (location.state.showCounts && lBallPotted)
                         {
                             alert(`${lDeepCopy[i].name} has lost a ball!`);
+                        }
+
+                        // If the player returned to the game by 'resurrecting' one of their potted balls.
+                        if (!lBallPotted && lNumBalls === 1)
+                        {
+                            ReturnPlayer(lDeepCopy, i);
+                            // Adjust the nthPlace variable of other players (i.e. any players who have a lower place).
+                            // for (const player of lDeepCopy)
+                            // {
+                            //     if (player.nthPlace < lDeepCopy[i].nthPlace)
+                            //         player.nthPlace += 1;
+                            // }
+
+                            // lDeepCopy[i].nthPlace = -1;
                         }
 
                         lBallFound = true;
@@ -210,9 +248,7 @@ function Game()
                     }
 
                     if (lBallFound)
-                    {
                         break;
-                    }
                 }
 
                 return lDeepCopy;
@@ -234,14 +270,6 @@ function Game()
         );
 
     };
-
-    useEffect(
-        () =>
-        {
-            RandomiseBalls();
-        },
-        []
-    );
 
     const highlightPlayersBalls = (aIndex) =>
     {
@@ -342,6 +370,11 @@ function Game()
             {
                 const lDeepCopy = JSON.parse(JSON.stringify(prev));
 
+                const lNumBalls = lDeepCopy[indexSelected].balls.filter(ball => !ball.in).length;
+
+                if (lNumBalls === 0)
+                    ReturnPlayer(lDeepCopy, indexSelected);
+
                 lDeepCopy[indexSelected].balls.push({ number: lBallRandom.number, in: false })
 
                 return lDeepCopy;
@@ -399,14 +432,31 @@ function Game()
                 // Record the ball that will be removed.
                 lBallRemoved = lBalls[lIndexRandom].number;
 
-                // Remove the card at the random index.
+                // Remove the ball at the random index.
                 lDeepCopy[indexSelected].balls = lBalls.filter((ball, index) => index !== lIndexRandom);
 
                 // Eliminate the player if they have no unpotted balls left.
                 if (lDeepCopy[indexSelected].balls.length === 0 || 
                     lDeepCopy[indexSelected].balls.filter(ball => ball.in === false).length === 0)
                 {
+                    const lNumPlayers = NumPlayersIn();
+
+                    lDeepCopy[indexSelected].nthPlace = lNumPlayers;
+                    
                     EliminatePlayer(indexSelected);
+
+                    // If the player who just lost placed 2nd, that means there's only one player left.
+                    if (lNumPlayers === 2)
+                    {
+                        // Set the place of the only remaining player to 1.
+                        for (const player of lDeepCopy)
+                        {
+                            if (player.balls.filter(el => !el.in).length === 0)
+                                continue;
+
+                            player.nthPlace = 1;
+                        }
+                    }
                 }
 
                 // Unselect the ball.
@@ -449,22 +499,13 @@ function Game()
         navigate("/");
     }
 
-    const lNumPlayersIn = players.filter(
-
-        (player) =>
-        {
-            const lAtLeastOneBallIn = player.balls.filter(ball => !ball.in).length > 0;
-
-            return lAtLeastOneBallIn;
-        }
-
-    ).length;
+    const lNumPlayersIn = NumPlayersIn();
 
     // The number of players' balls that are not yet potted.
     let lCountPlayersBalls = 0;
 
+    // The length of the longest name (can be used to make all the names the same length).
     let lLengthLongestName = 0;
-
     for (const player of players)
     {
         if (player.name.length > lLengthLongestName)
@@ -493,10 +534,10 @@ function Game()
                         players.map(
                             (player, index) => 
                             {
-                                let lNumBalls = player.balls.filter(el => el.in === false).length;
+                                let lNumBalls = player.balls.filter(el => !el.in).length;
 
-                                if (lNumBalls === 0)
-                                    return;
+                                // if (lNumBalls === 0)
+                                //     return;
 
                                 lCountPlayersBalls += lNumBalls;
 
@@ -505,25 +546,39 @@ function Game()
                                 if (!location.state.showCounts)
                                     lStyleBallCount["visibility"] = "hidden";
 
-                                // Specify whether a player is out (maybe change background colour).
+                                const lHasPlaced = player.nthPlace > 0 && !(lNumBalls > 0 && lNumPlayersIn > 1);
+
                                 return (
                                     <div 
                                         key = {index}
                                         className = { index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer" }
                                         onClick = { () => highlightPlayersBalls(index) }
                                     >
-                                        <div className = "playerName" >{ player.name }</div>
-
                                         {
-                                            <div 
-                                                className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
-                                                style = { lStyleBallCount }
-                                            >
-                                                <div className = "numCircle">
-                                                    { lNumBalls }
+                                            lHasPlaced && (
+                                                <div 
+                                                    className = "playerPlace" 
+                                                    style = { { backgroundColor: gColoursPoolBalls[player.nthPlace].primary } }
+                                                >
+                                                    <div className = "numCircle">
+                                                        { player.nthPlace }
+                                                        <sup>{utils.OrdinalSuffix(player.nthPlace)}</sup>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )
                                         }
+                                        <div className = "playerName" style = { lHasPlaced ? { marginLeft: 0 } : {} }>
+                                            { player.name.padEnd(lLengthLongestName) }
+                                        </div>
+
+                                        <div 
+                                            className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
+                                            style = { lStyleBallCount }
+                                        >
+                                            <div className = "numCircle">
+                                                { lNumBalls }
+                                            </div>
+                                        </div>
                                     </div>
                                 );
                             }
@@ -537,7 +592,11 @@ function Game()
                                     className = "conPlayer"
                                 >
                                     <div className = "playerName" ><b>Total</b></div>
-                                    <div className = "numBallsCount">{ lCountPlayersBalls }</div>
+                                    <div className = "numBallsCount" style = { { backgroundColor: gColoursPoolBalls[lCountPlayersBalls].primary } }>
+                                        <div className = "numCircle">
+                                            { lCountPlayersBalls }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -582,7 +641,7 @@ function Game()
                     }
 
                     {
-                        indexSelected >= 0 && (
+                        ((indexSelected >= 0) && players[indexSelected].balls.filter(ball => !ball.in).length > 0) && (
                             <button id = "btnRemoveBall" className = "btnBig" onClick = {handleRemoveBall}>Remove Ball</button>
                         )
                     }

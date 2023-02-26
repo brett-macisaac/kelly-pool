@@ -75,6 +75,28 @@ function GetFromLocalStorage(aKey)
     return JSON.parse(lString);
 }
 
+function OrdinalSuffix(aNum)
+{
+    if (typeof aNum !== 'number')
+        return;
+
+    const lNumAbs = Math.abs(aNum);
+
+    if (lNumAbs > 3 && lNumAbs < 21)
+        return "th";
+    
+    const lNumMod10 = lNumAbs % 10;
+
+    if (lNumMod10 === 1)
+        return "st";
+    else if (lNumMod10 === 2)
+        return "nd"
+    else if (lNumMod10 === 3)
+        return "rd"
+    else
+        return "th";
+}
+
 // An 'enum' for representing comparison operators.
 const CompOps = Object.freeze(
     {
@@ -92,6 +114,7 @@ const utils =
     RandomiseArray: RandomiseArray,
     SetInLocalStorage: SetInLocalStorage,
     GetFromLocalStorage: GetFromLocalStorage,
+    OrdinalSuffix: OrdinalSuffix,
     CompOps: CompOps
 };
 

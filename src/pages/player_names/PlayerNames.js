@@ -111,7 +111,7 @@ function PlayerNames()
                                         placeholder = "Name" 
                                         value = {name} 
                                         onChange = { (event) => handleChange(event, index) }
-                                        maxLength = "20"
+                                        maxLength = "12"
                                     />
                                 </div>
                             );
