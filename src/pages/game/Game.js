@@ -482,8 +482,6 @@ function Game()
 
                 <div id = "conPlayerList" className = "clearFix">
 
-                    {/* <h2>Players { `(${lNumPlayersIn})` }</h2> */}
-
                     <div 
                         id = "conTotalPlayers" className = "conPlayer"
                     >
@@ -502,6 +500,11 @@ function Game()
 
                                 lCountPlayersBalls += lNumBalls;
 
+                                const lStyleBallCount = { backgroundColor: gColoursPoolBalls[lNumBalls].primary };
+
+                                if (!location.state.showCounts)
+                                    lStyleBallCount["visibility"] = "hidden";
+
                                 // Specify whether a player is out (maybe change background colour).
                                 return (
                                     <div 
@@ -512,16 +515,14 @@ function Game()
                                         <div className = "playerName" >{ player.name }</div>
 
                                         {
-                                            location.state.showCounts && ( 
-                                                <div 
-                                                    className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
-                                                    style = { { backgroundColor: gColoursPoolBalls[lNumBalls].primary } }
-                                                >
-                                                    <div className = "numCircle">
-                                                        { lNumBalls }
-                                                    </div>
+                                            <div 
+                                                className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
+                                                style = { lStyleBallCount }
+                                            >
+                                                <div className = "numCircle">
+                                                    { lNumBalls }
                                                 </div>
-                                            )
+                                            </div>
                                         }
                                     </div>
                                 );
@@ -570,6 +571,7 @@ function Game()
                             columns = {3} 
                             clickBall = {clickBall}
                             balls = {balls}
+                            sizeBall = { 85 }
                         />
                     </div>
 

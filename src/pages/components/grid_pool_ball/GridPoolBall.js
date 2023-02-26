@@ -66,6 +66,7 @@ function GridPoolBall(props)
                                     potted = {ball.in} 
                                     selected = {ball.selected}
                                     margins = {lMargins}
+                                    sizeBall = { props.sizeBall }
                                 />
                             </div>
                         );

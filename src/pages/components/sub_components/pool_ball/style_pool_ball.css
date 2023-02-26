@@ -2,7 +2,7 @@
 /*
 * Mobile phone and portrait styling.
 */
-@media (orientation: portrait)
+/* @media (orientation: portrait)
 {
     :root
     {
@@ -16,22 +16,12 @@
     {
         --size-pool-ball: 12vh;
     }
-}
+} */
 
 .poolBall
 {
-    /* width: 90px;
-    height: 90px; */
-    width: var(--size-pool-ball);
-    height: var(--size-pool-ball);
-
     border: 0px solid transparent;
     border-radius: 50%;
-
-    /* padding: 15px 0px; */
-    padding: calc(var(--size-pool-ball) * (1 / 6)) 0px;
-
-    margin: calc(var(--size-pool-ball) * (35 / 100));
 
     overflow: hidden;
 }
@@ -39,11 +29,6 @@
 .poolBallStripe
 {
     width: 100%;
-
-    /* height: 60px; */
-    height: calc(var(--size-pool-ball) * (2 / 3));
-
-    padding: calc(var(--size-pool-ball) * (1 / 12)) 0px;
 }
 
 .poolBallNumber
@@ -53,20 +38,9 @@
     align-items: center;
     justify-content: center;
 
-    /* width: 50px;
-    height: 50px; */
-    width: calc(var(--size-pool-ball) * (1 / 2));
-    height: calc(var(--size-pool-ball) * (1 / 2)); 
-
-    /* Old way of centering text */
-    /* line-height: calc(var(--size-pool-ball) * (1 / 2)); */
-
-    /* border: 0px solid transparent; */
     border-radius: 50%;
 
     margin: auto;
-
-    font-size: calc(var(--size-pool-ball) * (27 / 100));
 
     text-align: center;
 

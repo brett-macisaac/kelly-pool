@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import GridBtnNum from '../components/grid_btn_num/GridBtnNum.js';
+import GridPoolBall from '../components/grid_pool_ball/GridPoolBall.js';
 import CheckBox from '../components/check_box/CheckBox.js';
 import consts from '../../utils/constants.js';
 import "./style_game_params.css";
@@ -92,14 +93,45 @@ function GameParams()
             <div className = "content hideScrollBar">
 
                 <h2>Number of Players</h2>
-                <div id = "conNumPlayers" className = "numSelector">
+                {/* <div id = "conNumPlayers" className = "numSelector">
                     <GridBtnNum size = {14} columns = {4} minNum = {2} selectNum = {selectNumPlayers} selected = {numPlayers} />
+                </div> */}
+                <div id = "conNumPlayers" className = "numSelector">
+                    <GridPoolBall 
+                        columns = {4} 
+                        clickBall = {selectNumPlayers}
+                        balls = { 
+                            Array.from({ length: 14 }, (el, index) => index + 2).map(
+                                (aNum) =>
+                                {
+                                    return { number: aNum, in: aNum === numPlayers, selected: aNum === numPlayers };
+                                }
+                            ) 
+                        }
+                        sizeBall = { 55 }
+                    />
                 </div>
 
                 <h2 id = "titleNumBalls" >Balls Per Player</h2>
-                <div id = "conNumBalls" className = "numSelector">
+                {/* <div id = "conNumBalls" className = "numSelector">
                     <GridBtnNum size = {maxNumBalls()} columns = {4} selectNum = {selectNumBalls} selected = {numBalls} />
+                </div> */}
+                <div id = "conNumBalls" className = "numSelector">
+                    <GridPoolBall 
+                        columns = {4} 
+                        clickBall = { selectNumBalls }
+                        balls = { 
+                            Array.from({ length: maxNumBalls() }, (el, index) => index + 1).map(
+                                (aNum) =>
+                                {
+                                    return { number: aNum, in: aNum === numBalls, selected: aNum === numBalls };
+                                }
+                            ) 
+                        }
+                        sizeBall = { 55 }
+                    />
                 </div>
+
 
                 <div id = "conCheckBox">
                     <CheckBox 

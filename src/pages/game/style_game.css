@@ -17,8 +17,13 @@
     #conPlayerList
     {
         width: 40vw;
-        max-width: 800px;
         float: left;
+    }
+
+    #conBalls
+    {
+        float: left;
+        margin-left: 60px;
     }
 }
 
@@ -30,15 +35,23 @@
     #conPlayerList
     {
         width: 90vw;
-        max-width: 650px;
-        margin: auto;
     }
 
     #conTotalBalls
     {
         width: 90vw;
-        max-width: 650px;
+        max-width: 500px;
     }
+
+    #conBalls
+    {
+        margin-top: 60px;
+    }
+}
+
+#conPlayerList
+{
+    max-width: 500px;
 }
 
 .conPlayer
@@ -88,8 +101,8 @@
 
 #conTotalBalls
 {
-    margin-top: 30px;
     margin-bottom: 20px;
+    margin-top: 30px;
 }
 
 #conTotalPlayers, #conTotalBalls
@@ -107,6 +120,7 @@
 #conTotalPlayersBalls > .conPlayer
 {
     border-radius: 0;
+    margin-bottom: 0;
 }
 
 #conPlayerList > div:last-child
@@ -117,31 +131,16 @@
 #btnReplay, #btnQuit
 {
     width: 100%;
+}
 
-    margin-top: 0;
+#btnReplay
+{
     margin-bottom: 30px;
 }
 
 #conGridPoolBall
 {
     margin: auto;
-}
-
-@media (orientation: portrait)
-{
-    #conBalls
-    {
-        margin: auto;
-    }
-}
-
-@media (orientation: landscape)
-{
-    #conBalls
-    {
-        float: left;
-        margin-left: 5vw;
-    }
 }
 
 #btnAddBall, #btnRemoveBall
