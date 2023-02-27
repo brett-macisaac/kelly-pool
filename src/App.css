@@ -149,12 +149,18 @@ div
     background-color: var(--colour-page);
 }
 
-/* Prevents the scrollbar from being displayed. */
+/* Prevent the scrollbar from being displayed in WebKit based browsers (Safari, Chrome, Opera, etc). */
+.hideScrollBar::-webkit-scrollbar
+{
+    display: none;
+}
+
+/* Prevents the scrollbar from being displayed in WebKit based browsers (FireFox, IE, Edge). */
 .hideScrollBar
 {
     /* Firefox */
     scrollbar-width: none;
 
-    /* IE 10+ */
+    /* IE 10+ and Edge */
     -ms-overflow-style: none;
 }
