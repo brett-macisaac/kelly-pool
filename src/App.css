@@ -123,17 +123,15 @@ div
 
     width: 90%;
     max-width: 500px;
-    height: 5vh;
 
     margin: auto;
+
+    padding: 10px 0;
 
     background-color: var(--colour-button);
 
     font-size: 20px;
     font-weight: 600;
-
-    /* Centre text */
-    line-height: 5vh;
 
     border: 1px solid var(--colour-button);
     border-radius: 20px;
