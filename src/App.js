@@ -1,5 +1,6 @@
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// Use HashRouter instead of BrowserRouter to prevent sending the urls to the server, which results in 404.
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './App.css';
 import GameParams from './pages/game_params/GameParams.js';
