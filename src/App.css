@@ -41,7 +41,7 @@ body
     /* Centre the text */
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
 
     /* position: sticky;
     top: 0; */

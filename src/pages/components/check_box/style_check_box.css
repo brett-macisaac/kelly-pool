@@ -4,7 +4,7 @@ label
 
     /* Centre items */
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
 
     font-size: inherit;
 
