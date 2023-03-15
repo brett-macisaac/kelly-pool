@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import GridBtnNum from '../components/grid_btn_num/GridBtnNum.js';
+// import GridBtnNum from '../components/grid_btn_num/GridBtnNum.js';
 import GridPoolBall from '../components/grid_pool_ball/GridPoolBall.js';
 import CheckBox from '../components/check_box/CheckBox.js';
 import consts from '../../utils/constants.js';
@@ -108,7 +108,7 @@ function GameParams()
                                 }
                             ) 
                         }
-                        sizeBall = { 55 }
+                        width = { 300 }
                     />
                 </div>
 
@@ -128,7 +128,7 @@ function GameParams()
                                 }
                             ) 
                         }
-                        sizeBall = { 55 }
+                        width = { 300 }
                     />
                 </div>
 

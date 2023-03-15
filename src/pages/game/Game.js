@@ -519,132 +519,136 @@ function Game()
 
             <h1 className = "pageHeading">Game</h1>
 
-            <div id = "conGameInner" className = "clearFix">
+            <div id = "contentGame" className = "content hideScrollBar">
 
-                <div id = "conPlayerList" className = "clearFix">
+                <div id = "conGameInner">
 
-                    <div 
-                        id = "conTotalPlayers" className = "conPlayer"
-                    >
-                        <div className = "playerName" ><b>Players</b></div>
-                        <div className = "numBallsCount">{ lNumPlayersIn }</div>
-                    </div>
+                    <div id = "conPlayerList" className = "clearFix">
 
-                    {
-                        players.map(
-                            (player, index) => 
-                            {
-                                let lNumBalls = player.balls.filter(el => !el.in).length;
+                        <div 
+                            id = "conTotalPlayers" className = "conPlayer"
+                        >
+                            <div className = "playerName" ><b>Players</b></div>
+                            <div className = "numBallsCount">{ lNumPlayersIn }</div>
+                        </div>
 
-                                // if (lNumBalls === 0)
-                                //     return;
+                        {
+                            players.map(
+                                (player, index) => 
+                                {
+                                    let lNumBalls = player.balls.filter(el => !el.in).length;
 
-                                lCountPlayersBalls += lNumBalls;
+                                    // if (lNumBalls === 0)
+                                    //     return;
 
-                                const lStyleBallCount = { backgroundColor: gColoursPoolBalls[lNumBalls].primary };
+                                    lCountPlayersBalls += lNumBalls;
 
-                                if (!location.state.showCounts)
-                                    lStyleBallCount["visibility"] = "hidden";
+                                    const lStyleBallCount = { backgroundColor: gColoursPoolBalls[lNumBalls].primary };
 
-                                const lHasPlaced = player.nthPlace > 0 && !(lNumBalls > 0 && lNumPlayersIn > 1);
+                                    if (!location.state.showCounts)
+                                        lStyleBallCount["visibility"] = "hidden";
 
-                                return (
-                                    <div 
-                                        key = {index}
-                                        className = { index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer" }
-                                        onClick = { () => highlightPlayersBalls(index) }
-                                    >
-                                        {
-                                            lHasPlaced && (
-                                                <div 
-                                                    className = "playerPlace" 
-                                                    style = { { backgroundColor: gColoursPoolBalls[player.nthPlace].primary } }
-                                                >
-                                                    <div className = "numCircle">
-                                                        { player.nthPlace }
-                                                        <sup>{utils.OrdinalSuffix(player.nthPlace)}</sup>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-                                        <div className = "playerName" style = { lHasPlaced ? { marginLeft: 0 } : {} }>
-                                            { player.name.padEnd(lLengthLongestName) }
-                                        </div>
+                                    const lHasPlaced = player.nthPlace > 0 && !(lNumBalls > 0 && lNumPlayersIn > 1);
 
+                                    return (
                                         <div 
-                                            className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
-                                            style = { lStyleBallCount }
+                                            key = {index}
+                                            className = { index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer" }
+                                            onClick = { () => highlightPlayersBalls(index) }
                                         >
+                                            {
+                                                lHasPlaced && (
+                                                    <div 
+                                                        className = "playerPlace" 
+                                                        style = { { backgroundColor: gColoursPoolBalls[player.nthPlace].primary } }
+                                                    >
+                                                        <div className = "numCircle">
+                                                            { player.nthPlace }
+                                                            <sup>{utils.OrdinalSuffix(player.nthPlace)}</sup>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+                                            <div className = "playerName" style = { lHasPlaced ? { marginLeft: 0 } : {} }>
+                                                { player.name.padEnd(lLengthLongestName) }
+                                            </div>
+
+                                            <div 
+                                                className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
+                                                style = { lStyleBallCount }
+                                            >
+                                                <div className = "numCircle">
+                                                    { lNumBalls }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                            )
+                        }
+
+                        {
+                            (location.state.showCounts && lNumPlayersIn > 1) && (
+                                <div id = "conTotalPlayersBalls">
+                                    <div 
+                                        className = "conPlayer"
+                                    >
+                                        <div className = "playerName" ><b>Total</b></div>
+                                        <div className = "numBallsCount" style = { { backgroundColor: gColoursPoolBalls[lCountPlayersBalls].primary } }>
                                             <div className = "numCircle">
-                                                { lNumBalls }
+                                                { lCountPlayersBalls }
                                             </div>
                                         </div>
                                     </div>
-                                );
-                            }
-                        )
-                    }
-
-                    {
-                        (location.state.showCounts && lNumPlayersIn > 1) && (
-                            <div id = "conTotalPlayersBalls">
-                                <div 
-                                    className = "conPlayer"
-                                >
-                                    <div className = "playerName" ><b>Total</b></div>
-                                    <div className = "numBallsCount" style = { { backgroundColor: gColoursPoolBalls[lCountPlayersBalls].primary } }>
-                                        <div className = "numCircle">
-                                            { lCountPlayersBalls }
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
-                        )
-                    }
+                            )
+                        }
 
-                    {
-                        lNumPlayersIn <= 1 && (
-                            <button id = "btnReplay" className = "btnBig" onClick = {handleReplay}>Replay</button>
-                        )
-                    }
+                        {
+                            lNumPlayersIn <= 1 && (
+                                <button id = "btnReplay" className = "btnBig" onClick = {handleReplay}>Replay</button>
+                            )
+                        }
+
+                        {
+                            lNumPlayersIn <= 1 && (
+                                <button id = "btnQuit" className = "btnBig" onClick = {handleQuit}>Quit</button>
+                            )
+                        }
+
+                    </div>
+
+                    <div id = "conBalls">
+
+                        <div 
+                            id = "conTotalBalls" className = "conPlayer"
+                        >
+                            <div className = "playerName" ><b>Balls</b></div>
+                            <div className = "numBallsCount">{ balls.filter((ball) => !ball.in).length }</div>
+                        </div>
+
+                        <div id = "conGridPoolBall">
+                            <GridPoolBall 
+                                columns = {3} 
+                                clickBall = {clickBall}
+                                balls = {balls}
+                                width = { 300 }
+                            />
+                        </div>
+
+                        {
+                            (indexSelected >= 0 && (availableBalls()).length > 0) && (
+                                <button id = "btnAddBall" className = "btnBig" onClick = {handleAddBall}>Add Ball</button>
+                            )
+                        }
+
+                        {
+                            ((indexSelected >= 0) && players[indexSelected].balls.filter(ball => !ball.in).length > 0) && (
+                                <button id = "btnRemoveBall" className = "btnBig" onClick = {handleRemoveBall}>Remove Ball</button>
+                            )
+                        }
+                    </div>
                     
-                    {
-                        lNumPlayersIn <= 1 && (
-                            <button id = "btnQuit" className = "btnBig" onClick = {handleQuit}>Quit</button>
-                        )
-                    }
-
-                </div>
-                
-                <div id = "conBalls">
-
-                    <div 
-                        id = "conTotalBalls" className = "conPlayer"
-                    >
-                        <div className = "playerName" ><b>Balls</b></div>
-                        <div className = "numBallsCount">{ balls.filter((ball) => !ball.in).length }</div>
-                    </div>
-
-                    <div id = "conGridPoolBall">
-                        <GridPoolBall 
-                            columns = {3} 
-                            clickBall = {clickBall}
-                            balls = {balls}
-                            sizeBall = { 85 }
-                        />
-                    </div>
-
-                    {
-                        (indexSelected >= 0 && (availableBalls()).length > 0) && (
-                            <button id = "btnAddBall" className = "btnBig" onClick = {handleAddBall}>Add Ball</button>
-                        )
-                    }
-
-                    {
-                        ((indexSelected >= 0) && players[indexSelected].balls.filter(ball => !ball.in).length > 0) && (
-                            <button id = "btnRemoveBall" className = "btnBig" onClick = {handleRemoveBall}>Remove Ball</button>
-                        )
-                    }
                 </div>
 
             </div>

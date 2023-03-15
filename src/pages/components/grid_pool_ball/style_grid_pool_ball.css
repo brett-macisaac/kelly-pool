@@ -1,9 +1,16 @@
+/* .gridPoolBall
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+} */
+
 .conPoolBall
 {
-    float: left;
+    display: inline-block;
 }
 
-/* .conInnerPoolBall
+.gridPoolBallInner
 {
-    border: 1px solid var(--colour-page);
-} */
+    margin: auto;
+}

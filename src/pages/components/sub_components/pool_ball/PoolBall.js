@@ -27,7 +27,12 @@ function PoolBall(props)
         width: `${props.sizeBall}px`,
         height: `${props.sizeBall}px`,
         padding: `${props.sizeBall * 1 / 6}px 0px`,
-        margin: `${props.sizeBall * 35 / 100}px`
+        //margin: `${props.sizeBall * 35 / 100}px`,
+        marginTop: props.marginSize,
+        marginRight: props.marginSize,
+        marginBottom: props.marginSize,
+        marginLeft: props.marginSize,
+
     };
 
     if (!props.margins[0])
@@ -71,9 +76,10 @@ PoolBall.propTypes =
 {
     number: PropTypes.number.isRequired,
     potted: PropTypes.bool.isRequired,
-    margins: PropTypes.array.isRequired,
     selected: PropTypes.bool,
-    sizeBall: PropTypes.number
+    margins: PropTypes.array.isRequired,
+    marginSize: PropTypes.number,
+    sizeBall: PropTypes.number,
 };
 
 export default PoolBall;

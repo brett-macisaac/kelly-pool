@@ -67,9 +67,8 @@ body
 .content
 {
     height: calc(100vh - var(--height-footer) - var(--height-header));
-    width: fit-content;
-
-    overflow-y: scroll;
+    width: 100%;
+    overflow: scroll;
 
     margin: auto !important;
 

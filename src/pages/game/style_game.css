@@ -1,6 +1,10 @@
+#contentGame
+{
+    height: auto;
+}
+
 #conGameInner
 {
-    width: fit-content;
     margin: auto;
 }
 
@@ -39,12 +43,14 @@
 
     #conTotalBalls
     {
+        margin: auto;
         width: 90vw;
         max-width: 500px;
     }
 
     #conBalls
     {
+        margin: auto;
         margin-top: 60px;
         margin-bottom: 15px;
     }
@@ -53,6 +59,7 @@
 #conPlayerList
 {
     max-width: 500px;
+    margin: auto;
 }
 
 .conPlayer
