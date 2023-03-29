@@ -49,6 +49,7 @@ function PoolBall(props)
 
     const lStyleStripe = {
         backgroundColor: lColourPrimary,
+        width: props.sizeBall,
         height: `${props.sizeBall * 2 / 3}px`,
         padding: `${props.sizeBall * 1 / 12}px 0px`
     };

@@ -1,6 +1,7 @@
 #contentGame
 {
-    height: auto;
+    height: calc(100vh - var(--height-header)); 
+    /* height: auto; */
 }
 
 #conGameInner

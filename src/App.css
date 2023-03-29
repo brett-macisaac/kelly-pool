@@ -42,8 +42,8 @@ body
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
-    /* position: sticky;
+/* 
+    position: sticky;
     top: 0; */
 
     width: 100%;
@@ -70,9 +70,11 @@ body
     width: 100%;
     overflow: scroll;
 
-    margin: auto !important;
+    /* margin: auto !important; */
 
     font-size: 16px;
+
+    padding-bottom: 30px;
 }
 
 .footer
@@ -82,6 +84,8 @@ body
     justify-content: center;
     
     width: 100%;
+
+    background-color: black;
 
     height: var(--height-footer);
 }
@@ -132,8 +136,14 @@ div
     font-size: 20px;
     font-weight: 600;
 
-    border: 1px solid var(--colour-button);
+    border: none;
     border-radius: 20px;
+}
+
+#btnNext, #btnStart
+{
+    background-color: var(--colour-page);
+    color: white;
 }
 
 .btnBig:hover

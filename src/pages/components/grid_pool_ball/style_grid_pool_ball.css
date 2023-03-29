@@ -1,11 +1,11 @@
-/* .gridPoolBall
+.gridPoolBall
 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-} */
+}
 
-.conPoolBall
+/* .conPoolBall
 {
     display: inline-block;
 }
@@ -13,4 +13,4 @@
 .gridPoolBallInner
 {
     margin: auto;
-}
+} */

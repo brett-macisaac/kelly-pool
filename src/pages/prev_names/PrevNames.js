@@ -138,8 +138,12 @@ function PrevNames()
                         {
                             const lId = `chk${name}`;
 
+                            const lIsLast = index === prevNames.length - 1;
+
+                            const lClass = lIsLast ? "conPrevPlayer conPrevPlayerLast" : "conPrevPlayer";
+
                             return (
-                                <div className = "conPrevPlayer" key = {`${name}-${index}`}>
+                                <div className = { lClass } key = {`${name}-${index}`}>
                                     <CheckBox 
                                         id = {lId}
                                         name = { name.padEnd(lLengthLongestName, ' ') }

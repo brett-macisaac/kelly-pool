@@ -18,80 +18,60 @@ function GridPoolBall(props)
     let lWidthBall = props.width / (props.columns + props.columns * lMarginProportion - lMarginProportion);
     let lMarginBall = lWidthBall * lMarginProportion;
 
-    const lWidthTotal = lWidthBall * props.columns + lMarginBall * (props.columns - 1);
+    // Reduce the margin slightly to eliminate the rows being a bit too wide due to floating-point precision.
+    lMarginBall *= 0.999;
 
-    if (lWidthTotal >= props.width)
-    {
-        lMarginBall *= 0.999;
-    }
+    const lNumRows = Math.floor(props.balls.length / props.columns) + (props.balls.length % props.columns > 0 ? 1 : 0);
 
     return (
-        <div className = "gridPoolBall" style = { { width: props.width } }>
-            <div className = "gridPoolBallInner">
-                {
-                    props.balls.map(
-                        (ball, aIndex) =>
+        <div className = "gridPoolBall" style = { { width: lNumRows > 1 ? props.width : 'fit-content' } }>
+            {
+                props.balls.map(
+                    (ball, aIndex) =>
+                    {
+                        const lStyleContainer = { };
+
+                        // Flags which determine which margins are applied to the ball (order: top, right, bottom, left).
+                        // The balls' margins should be between the balls, not between the grid and whatever is around it.
+                        // i.e. the margins should only be internal.
+                        const lMargins = Array(4).fill(false);
+
+                        const lIsInLastColumn = (aIndex + 1) % props.columns === 0;
+                        const lIsInLastRow = aIndex >= (lNumRows * props.columns) - props.columns;
+
+                        /* Margin order: top | right | bottom | left */
+
+                        if (!lIsInLastRow)
+                            lMargins[2] = true;
+
+                        if (!lIsInLastColumn)
                         {
-                            const lStyleContainer = { };
-
-                            // if (aIndex % props.columns === 0)
-                            // {
-                            //     lStyleContainer.clear = "left";
-                            // }
-
-                            const lStyleInner = { };
-
-                            if (ball.selected)
-                            {
-                                lStyleInner.borderColor = "white";
-                            }
-
-                            // Flags which determine which margins are applied to the ball (order: top, right, bottom, left).
-                            // The balls' margins should be between the balls, not between the grid and whatever is around it.
-                            // i.e. the margins should only be internal.
-                            const lMargins = Array(4).fill(false);
-
-                            const lNumRows = Math.floor(props.balls.length / props.columns) + (props.balls.length % props.columns > 0 ? 1 : 0);
-
-                            const lIsInLastColumn = (aIndex + 1) % props.columns === 0;
-                            const lIsInLastRow = aIndex >= (lNumRows * props.columns) - props.columns;
-                            // i >= (aNumRows * aNumColumns) - aNumColumns
-
-                            /* Margin order: top | right | bottom | left */
-
-                            if (!lIsInLastRow)
-                                lMargins[2] = true;
-
-                            if (!lIsInLastColumn)
-                            {
-                                lMargins[1] = true;
-                            }
-
-                            if (aIndex === props.balls.length - 1)
-                                lMargins[1] = false;
-
-                            return (
-                                <div
-                                    className = "conPoolBall"
-                                    key = {ball.number}
-                                    style = { lStyleContainer }
-                                    onClick = { () => props.clickBall(ball.number) }
-                                >
-                                    <PoolBall 
-                                        number = {ball.number} 
-                                        potted = {ball.in} 
-                                        selected = {ball.selected}
-                                        margins = {lMargins}
-                                        marginSize = {lMarginBall}
-                                        sizeBall = { lWidthBall }
-                                    />
-                                </div>
-                            );
+                            lMargins[1] = true;
                         }
-                    )
-                }
 
-            </div>
+                        if (aIndex === props.balls.length - 1)
+                            lMargins[1] = false;
+
+                        return (
+                            <div
+                                className = "conPoolBall"
+                                key = {ball.number}
+                                style = { lStyleContainer }
+                                onClick = { () => props.clickBall(ball.number) }
+                            >
+                                <PoolBall 
+                                    number = {ball.number} 
+                                    potted = {ball.in} 
+                                    selected = {ball.selected}
+                                    margins = {lMargins}
+                                    marginSize = {lMarginBall}
+                                    sizeBall = { lWidthBall }
+                                />
+                            </div>
+                        );
+                    }
+                )
+            }
         </div>
     );
 }
