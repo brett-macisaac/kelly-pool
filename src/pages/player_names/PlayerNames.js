@@ -1,28 +1,34 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import utils from "../../utils/utils.js";
-import consts from "../../utils/constants.js";
+import globalProps, { utilsGlobalStyles } from "../../styles.js";
+import TextInputStandard from '../../components/text_input_standard/TextInputStandard.js';
+import TextStandard from '../../components/text_standard/TextStandard.js';
+import PageContainer from '../../components/page_container/PageContainer.js';
+import utils from '../../utils/utils.js';
+import consts from '../../utils/constants.js';
+import { PopUpOk } from '../../components/pop_up_standard/PopUpStandard.js'
+import optionsHeaderButtons from '../../components/options_header_buttons.js';
 
-import "./style_player_names.css";
-
-function PlayerNames()
+function PlayerNames() 
 {
-    const location = useLocation();
-
     const navigate = useNavigate();
+
+    const location = useLocation();
 
     const [names, setNames] = useState(
 
-        location.state.returningPlayers 
+        location.state.prevPlayers 
             ? 
-                Object.assign(new Array(location.state.numPlayers).fill(""), location.state.returningPlayers) 
+                Object.assign(new Array(location.state.numPlayers).fill(""), location.state.prevPlayers) 
             :
                 Array(location.state.numPlayers).fill("")
 
     );
 
-    const handleChange = (event, aIndex) =>
+    const [optionsPopUpMsg, setOptionsPopUpMsg] = useState(undefined);
+
+    const handleTextInput = (aNewText, aIndex) =>
     {
         setNames(
             (prev) =>
@@ -32,7 +38,7 @@ function PlayerNames()
                     {
                         if (index === aIndex)
                         {
-                            return event.target.value;
+                            return aNewText;
                         }
                         else
                         {
@@ -45,26 +51,27 @@ function PlayerNames()
 
     };
 
-    const handlePress = () =>
+    const handleStart = () => 
     {
         const lAreNamesSet = names.every((name) => name !== "");
 
         if (!lAreNamesSet)
         {
-            console.log("Please set all names.");
+            setOptionsPopUpMsg(PopUpOk("Not enough names!", "You must give each player a name before you can start."));
             return;
         }
 
-        // If the localStorage array of player names doesn't yet exist, create it.
-        if (!localStorage.hasOwnProperty(consts.lclStrgKeyPrevNames))
+        let lPrevNames = utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames);
+
+        // If player names haven't been stored before, create an empty array in internal storage.
+        if (!(lPrevNames instanceof Array))
         {
             utils.SetInLocalStorage(consts.lclStrgKeyPrevNames, []);
+
+            lPrevNames = [];
         }
 
-        // An array of all the previous names that have been entered.
-        const lPrevNames = utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames);
-
-        // Store any new names in the localStorage array.
+        // Store any new names in the array.
         for (const name of names)
         {
             // Skip any pre-recorded names.
@@ -74,61 +81,94 @@ function PlayerNames()
             lPrevNames.push(name);
         }
 
-        // Store the updated names into localStorage.
+        // Store the updated names in internal storage.
         utils.SetInLocalStorage(consts.lclStrgKeyPrevNames, lPrevNames);
 
         utils.RandomiseArray(names);
 
-        navigate(
-            "/game", 
-            { 
-                state: 
-                { 
-                    playerNames: names, 
-                    numBalls: location.state.numBalls, 
-                    showCounts: location.state.showCounts 
-                } 
+        navigate("/game", { state: { ...location.state, playerNames: JSON.parse(JSON.stringify(names)) } });
+    }
+
+    return ( 
+        <PageContainer
+            navigate = { navigate }
+            buttonNavBarText = "START"
+            buttonNavBarHandler = { handleStart }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
+            //optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] } // State isn't saved with react-router-dom.
+            optionsPopUpMsg = { optionsPopUpMsg }
+            style = { styles.container }
+        >
+            <TextStandard 
+                text = { "Enter the players' names below."} 
+                size = { 1 }
+                isBold
+                isItalic
+                style = { styles.titlePlayer }  
+            />
+
+            {
+                names.map(
+                    (name, index) =>
+                    {
+                        return (
+                            <div key = { index } style = { styles.conInputPlayerName }>
+                                <TextStandard 
+                                    text = { `Player ${index + 1}` } 
+                                    size = { 1 }
+                                    isBold
+                                    isItalic
+                                    style = { styles.titlePlayer }  
+                                />
+                                <TextInputStandard 
+                                    placeholder = "Name"
+                                    text = { name } 
+                                    onChangeText = { (newText) => handleTextInput(newText, index) }
+                                    maxLength = { 12 }
+                                    style = { styles.txtName }
+                                />
+                            </div>
+                        );
+                    }
+                )
             }
-        );
-    };
 
-    return (
-        <div id = "conPlayerNames" className = "pageContainer">
-
-            <h1 className = "pageHeading">Player Names</h1>
-
-            <div className = "content hideScrollBar">
-
-                {
-                    names.map(
-                        (name, index) =>
-                        {
-                            return (
-                                <div className = "conPlayerName" key = {index}>
-                                    <h2>Player {index + 1}</h2>
-                                    <input 
-                                        type = "text" 
-                                        placeholder = "Name" 
-                                        value = {name} 
-                                        onChange = { (event) => handleChange(event, index) }
-                                        maxLength = "12"
-                                    />
-                                </div>
-                            );
-                        }
-                    )
-                }
-
-            </div>
-
-            <div className = "footer">
-
-                <button id = "btnStart" className = "btnBig" onClick = {handlePress}>Start</button>
-
-            </div>
-
-        </div>
+        </PageContainer>
     );
 }
+
+const styles =
+{
+    container:
+    {
+        rowGap: utilsGlobalStyles.spacingVertN(),
+        //justifyContent: "center", // Issue when content overflows, scroll doesn't go to top.
+        alignItems: "center",
+        paddingLeft: utilsGlobalStyles.spacingVertN(-2),
+        paddingRight: utilsGlobalStyles.spacingVertN(-2),
+    },
+    conInputPlayerName:
+    {
+        flexDirection: "column",
+        width: "65%",
+        maxWidth: 500
+    },
+    txtName: 
+    {
+        // backgroundColor: "#000",
+        alignItems: 'center',
+        justifyContent: 'center',
+        //width: "80%",
+        maxWidth: 500,
+        textAlign: 'center',
+        padding: 5,
+        // color: "#FFF"
+    },
+    titlePlayer: 
+    {
+        textAlign: "center",
+        marginBottom: utilsGlobalStyles.spacingVertN(-3)
+    }
+};
 
 export default PlayerNames;

@@ -4,7 +4,7 @@
     --colour-text: white;
     --colour-button: black;
 
-    --colour-experiment: #7c6a04;
+    --colour-experiment: #444455;
 
     --height-header: 50px;
     --height-footer: 80px
@@ -15,9 +15,10 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    overflow: 'hidden';
 
     color: var(--colour-text);
-    font-family: "Courier New", Verdana, Tahoma, sans-serif;
+    font-family: Verdana, Roboto, "Courier New", Tahoma, sans-serif;
 }
 
 html
@@ -28,6 +29,7 @@ html
 body
 {
     min-height: 100%;
+    max-height: 100%;
     background: var(--colour-page);
 }
 
@@ -100,9 +102,16 @@ h2
     margin-bottom: 15px;
 }
 
+div, body
+{
+    display: flex;
+    /* flex-direction: column; */
+    /* width: fit-content; */
+}
+
 div
 {
-    width: fit-content;
+    flex-direction: column;
 }
 
 .clearFix::after
@@ -170,4 +179,26 @@ div
 
     /* IE 10+ and Edge */
     -ms-overflow-style: none;
+}
+
+/* Placeholder text styling. */
+::placeholder /* Chrome, Firefox, Opera, Safari 10.1+ */
+{ 
+    opacity: 0.8;
+}
+:-ms-input-placeholder /* Internet Explorer 10-11 */
+{
+    opacity: 0.8;
+}
+::-ms-input-placeholder /* Microsoft Edge */
+{
+    opacity: 0.8;
+}
+
+/* Prevent text selection. */
+.unselectable 
+{
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }

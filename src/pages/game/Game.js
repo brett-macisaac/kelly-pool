@@ -1,24 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Home from '@mui/icons-material/Home';
 
-import GridPoolBall from "../components/grid_pool_ball/GridPoolBall.js";
+import ThemeContext from "../../contexts/ThemeContext.js";
+import globalProps, { styles as globalStyles, utilsGlobalStyles } from "../../styles.js";
 import consts from '../../utils/constants.js';
-import utils from "../../utils/utils.js";
-import "./style_game.css";
+import utils from '../../utils/utils.js';
 
-import gColoursPoolBalls from "../../utils/colours_pool_balls.js";
+import PageContainer from '../../components/page_container/PageContainer.js';
+import CountContainer from '../../components/count_container/CountContainer.js';
+import TextStandard from '../../components/text_standard/TextStandard.js';
+import GridPoolBall from '../../components/grid_pool_ball/GridPoolBall.js';
+import ButtonStandard from '../../components/button_standard/ButtonStandard.js';
+import Container from '../../components/container/Container.js';
+import { PopUpOk } from '../../components/pop_up_standard/PopUpStandard.js'
+import optionsHeaderButtons from '../../components/options_header_buttons.js';
+import PlayerLabel from '../../components/player_label/PlayerLabel.js';
 
-function Game()
+function Game() 
 {
     const navigate = useNavigate();
 
     const location = useLocation();
-    //console.log(location.state);
+
+    // Acquire global theme.
+    const { themeName } = useContext(ThemeContext);
+    let theme = globalProps.themes[themeName];
 
     const [players, setPlayers] = useState(
-        
         location.state.playerNames.map(
-
             (aName) =>
             {
                 return {
@@ -27,7 +37,6 @@ function Game()
                     nthPlace: -1
                 }
             }
-
         )
 
     );
@@ -45,6 +54,8 @@ function Game()
 
     const [indexSelected, setIndexSelected] = useState(-1);
 
+    const [optionsPopUpMsg, setOptionsPopUpMsg] = useState(undefined);
+
     const NumPlayersIn = () =>
     {
         return players.filter(
@@ -57,9 +68,15 @@ function Game()
         ).length;
     }
 
-    const EliminatePlayer = (aIndex) =>
+    const EliminatePlayer = (aIndex, nameWinner) =>
     {
-        alert(`${players[aIndex].name} has been eliminated!`);
+        setOptionsPopUpMsg(
+            PopUpOk("Player Eliminated", `${players[aIndex].name} has been eliminated.`, 
+                    nameWinner ? () => setOptionsPopUpMsg(PopUpOk("Winner!", `${nameWinner} has won the game!`)) 
+                               : undefined
+            )
+        );
+        //Alert.alert("Player Eliminated", `${players[aIndex].name} has been eliminated`, undefined, { cancelable: true });
 
         if (aIndex === indexSelected)
         {
@@ -72,13 +89,29 @@ function Game()
     const ReturnPlayer = (aPlayers, aIndex) =>
     {
         // Adjust the nthPlace variable of other players (i.e. any players who have a lower place).
-        for (const player of aPlayers)
+        for (let i = 0; i < aPlayers.length; ++i)
         {
-            if (player.nthPlace <= 0)
+            if (i === aIndex)
                 continue;
+            
+            if (aPlayers[i].nthPlace <= 0) // If the aPlayers[i] hasn't yet placed.
+            {
+                continue;
+            }
+            else // If the aPlayers[i] has placed.
+            {
+                // If the aPlayers[i] placed but has balls left.
+                const lHasBalls = aPlayers[i].balls.filter(ball => !ball.in).length > 0;
 
-            if (player.nthPlace < aPlayers[aIndex].nthPlace)
-                player.nthPlace += 1;
+                if (lHasBalls)
+                {
+                    aPlayers[i].nthPlace = -1;
+                }
+                else if (aPlayers[i].nthPlace < aPlayers[aIndex].nthPlace)
+                {
+                    aPlayers[i].nthPlace += 1;
+                }
+            }
         }
 
         if (aPlayers[aIndex].nthPlace !== 1)
@@ -160,7 +193,7 @@ function Game()
                     {
                         lDeepCopy[i].balls[j].number = lBalls[lIndexBalls++];
                         lDeepCopy[i].balls[j].in = false;
-                        lDeepCopy[i].balls[j].nthPlace = -1;
+                        lDeepCopy[i].nthPlace = -1;
                     }
                 }
 
@@ -201,14 +234,15 @@ function Game()
 
                         lDeepCopy[i].balls[j].in = !(lDeepCopy[i].balls[j].in);
 
-                        let lNumBalls = lDeepCopy[i].balls.filter(el => el.in === false).length;
+                        let lNumBalls = lDeepCopy[i].balls.filter(ball => !ball.in).length;
 
                         if (lNumBalls === 0)
                         {
                             const lNumPlayers = NumPlayersIn();
 
                             lDeepCopy[i].nthPlace = lNumPlayers;
-                            EliminatePlayer(i);
+
+                            let nameWinner = "";
 
                             // If the player who just lost placed 2nd, that means there's only one player left.
                             if (lNumPlayers === 2)
@@ -216,30 +250,30 @@ function Game()
                                 // Set the place of the only remaining player to 1.
                                 for (const player of lDeepCopy)
                                 {
-                                    if (player.balls.filter(el => !el.in).length === 0)
+                                    // if (player.balls.filter(el => !el.in).length === 0)
+                                    //     continue;
+                                    if (player.nthPlace > 0)
                                         continue;
 
                                     player.nthPlace = 1;
+
+                                    nameWinner = player.name;
+
+                                    break;
                                 }
                             }
+
+                            EliminatePlayer(i, nameWinner);
                         }
                         else if (location.state.showCounts && lBallPotted)
                         {
-                            alert(`${lDeepCopy[i].name} has lost a ball!`);
+                            setOptionsPopUpMsg(PopUpOk("Lost Ball", `${ lDeepCopy[i].name} has lost a ball.`));
                         }
 
                         // If the player returned to the game by 'resurrecting' one of their potted balls.
                         if (!lBallPotted && lNumBalls === 1)
                         {
                             ReturnPlayer(lDeepCopy, i);
-                            // Adjust the nthPlace variable of other players (i.e. any players who have a lower place).
-                            // for (const player of lDeepCopy)
-                            // {
-                            //     if (player.nthPlace < lDeepCopy[i].nthPlace)
-                            //         player.nthPlace += 1;
-                            // }
-
-                            // lDeepCopy[i].nthPlace = -1;
                         }
 
                         lBallFound = true;
@@ -294,9 +328,6 @@ function Game()
 
                     lDeepCopy[i].selected = false;
                 }
-
-                console.log("Deselected Balls:");
-                console.log(lBallNumsDeselected);
 
                 const lPlayer = players[aIndex];
 
@@ -355,9 +386,6 @@ function Game()
 
         // Balls that haven't been potted and are not assigned to a player.
         const lBallsAvailable = availableBalls();
-
-        console.log("Available balls: ");
-        console.log(lBallsAvailable);
 
         if (lBallsAvailable.length === 0)
             return;
@@ -437,7 +465,7 @@ function Game()
 
                 // Eliminate the player if they have no unpotted balls left.
                 if (lDeepCopy[indexSelected].balls.length === 0 || 
-                    lDeepCopy[indexSelected].balls.filter(ball => ball.in === false).length === 0)
+                    lDeepCopy[indexSelected].balls.filter(ball => !ball.in).length === 0)
                 {
                     const lNumPlayers = NumPlayersIn();
 
@@ -451,10 +479,13 @@ function Game()
                         // Set the place of the only remaining player to 1.
                         for (const player of lDeepCopy)
                         {
-                            if (player.balls.filter(el => !el.in).length === 0)
+                            // if (player.balls.filter(el => !el.in).length === 0)
+                            //     continue;
+                            if (player.nthPlace > 0)
                                 continue;
 
                             player.nthPlace = 1;
+                            break;
                         }
                     }
                 }
@@ -496,7 +527,7 @@ function Game()
 
     const handleQuit = () =>
     {
-        navigate("/");
+        navigate("/", { replace: true });
     }
 
     const lNumPlayersIn = NumPlayersIn();
@@ -514,147 +545,221 @@ function Game()
         }
     }
 
-    return (
-        <div id = "conGame" className = "pageContainer">
+    return ( 
+        <PageContainer
+            navigate = { navigate }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtonMenu ] }
+            //optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] } // State isn't saved with react-router-dom, so no settings mid-game.
+            optionsPopUpMsg = { optionsPopUpMsg }
+            style = { styles.container }
+        >
+            <CountContainer 
+                title = "Players" count = { lNumPlayersIn } size = { 1 } 
+            >
+                <TextStandard 
+                    text = "Select your name below to see which balls belong to you." 
+                    style = { styles.lblPrompt }
+                />
 
-            <h1 className = "pageHeading">Game</h1>
-
-            <div id = "contentGame" className = "content hideScrollBar">
-
-                <div id = "conGameInner">
-
-                    <div id = "conPlayerList" className = "clearFix">
-
-                        <div 
-                            id = "conTotalPlayers" className = "conPlayer"
-                        >
-                            <div className = "playerName" ><b>Players</b></div>
-                            <div className = "numBallsCount">{ lNumPlayersIn }</div>
-                        </div>
-
+                {
+                    players.map(
+                        (player, index) => 
                         {
-                            players.map(
-                                (player, index) => 
-                                {
-                                    let lNumBalls = player.balls.filter(el => !el.in).length;
+                            let lNumBalls = player.balls.filter(el => !el.in).length;
 
-                                    // if (lNumBalls === 0)
-                                    //     return;
+                            lCountPlayersBalls += lNumBalls;
 
-                                    lCountPlayersBalls += lNumBalls;
+                            const lStyleCon = { };
 
-                                    const lStyleBallCount = { backgroundColor: gColoursPoolBalls[lNumBalls].primary };
+                            if (index !== players.length - 1)
+                                lStyleCon.marginBottom = globalProps.spacingStandard;
 
-                                    if (!location.state.showCounts)
-                                        lStyleBallCount["visibility"] = "hidden";
-
-                                    const lHasPlaced = player.nthPlace > 0 && !(lNumBalls > 0 && lNumPlayersIn > 1);
-
-                                    return (
-                                        <div 
-                                            key = {index}
-                                            className = { index === indexSelected ? "conPlayer conPlayerSelected" : "conPlayer" }
-                                            onClick = { () => highlightPlayersBalls(index) }
-                                        >
-                                            {
-                                                lHasPlaced && (
-                                                    <div 
-                                                        className = "playerPlace" 
-                                                        style = { { backgroundColor: gColoursPoolBalls[player.nthPlace].primary } }
-                                                    >
-                                                        <div className = "numCircle">
-                                                            { player.nthPlace }
-                                                            <sup>{utils.OrdinalSuffix(player.nthPlace)}</sup>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
-                                            <div className = "playerName" style = { lHasPlaced ? { marginLeft: 0 } : {} }>
-                                                { player.name.padEnd(lLengthLongestName) }
-                                            </div>
-
-                                            <div 
-                                                className = { index === indexSelected ? "numBallsCount numBallsCountSelected" : "numBallsCount" }
-                                                style = { lStyleBallCount }
-                                            >
-                                                <div className = "numCircle">
-                                                    { lNumBalls }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                }
-                            )
-                        }
-
-                        {
-                            (location.state.showCounts && lNumPlayersIn > 1) && (
-                                <div id = "conTotalPlayersBalls">
-                                    <div 
-                                        className = "conPlayer"
-                                    >
-                                        <div className = "playerName" ><b>Total</b></div>
-                                        <div className = "numBallsCount" style = { { backgroundColor: gColoursPoolBalls[lCountPlayersBalls].primary } }>
-                                            <div className = "numCircle">
-                                                { lCountPlayersBalls }
-                                            </div>
-                                        </div>
-                                    </div>
+                            return (
+                                <div style = { lStyleCon } key = { index }>
+                                    <PlayerLabel 
+                                        name = { player.name.padEnd(lLengthLongestName) }
+                                        ballCount = { lNumBalls }
+                                        isSelected = { index === indexSelected }
+                                        showCount = { location.state.showCounts } // !!! Change this later once the 'hide count' feature is implemented.
+                                        onClick = { () => highlightPlayersBalls(index) }
+                                        place = { player.nthPlace }
+                                    />
                                 </div>
-                            )
+                            );
                         }
+                    )
+                }
 
-                        {
-                            lNumPlayersIn <= 1 && (
-                                <button id = "btnReplay" className = "btnBig" onClick = {handleReplay}>Replay</button>
-                            )
-                        }
-
-                        {
-                            lNumPlayersIn <= 1 && (
-                                <button id = "btnQuit" className = "btnBig" onClick = {handleQuit}>Quit</button>
-                            )
-                        }
-
-                    </div>
-
-                    <div id = "conBalls">
-
-                        <div 
-                            id = "conTotalBalls" className = "conPlayer"
-                        >
-                            <div className = "playerName" ><b>Balls</b></div>
-                            <div className = "numBallsCount">{ balls.filter((ball) => !ball.in).length }</div>
+                {
+                    (location.state.showCounts && lNumPlayersIn > 1) && (
+                        <div>
+                            <div style = { { backgroundColor: theme.borders, width: "100%", height: 5, marginTop: globalProps.spacingStandard, marginBottom: globalProps.spacingStandard } } ></div>
+                            <PlayerLabel name = "Total" ballCount = { lCountPlayersBalls } emboldenName/>
                         </div>
+                    )
+                }
 
-                        <div id = "conGridPoolBall">
-                            <GridPoolBall 
-                                columns = {3} 
-                                clickBall = {clickBall}
-                                balls = {balls}
-                                width = { 300 }
+            </CountContainer>
+            
+            {/* Replay and Quit buttons. */}
+            {
+                lNumPlayersIn <= 1 && (
+                    <Container>
+
+                        <ButtonStandard 
+                            text = "Replay" 
+                            onPress = { handleReplay }
+                            isBold sizeText = { 1 } style = {{ ...styles.btnGame, marginBottom: utilsGlobalStyles.spacingVertN(0) }}
+                        />
+
+                        <ButtonStandard 
+                            text = "Return to Menu" 
+                            onPress = { handleQuit }
+                            isBold sizeText = { 1 } style = { styles.btnGame }
+                        />
+
+                    </Container>
+                )
+            }
+
+            <CountContainer 
+                title = "Balls" count = { balls.filter((ball) => !ball.in).length } size = { 1 } 
+            >
+                <TextStandard 
+                    text = "Double-click the balls to add or remove them from the game." 
+                    style = { styles.lblPrompt }
+                />
+
+                <GridPoolBall 
+                    columns = { 3 }
+                    clickBall = { clickBall }
+                    singleClickBall = { () => setOptionsPopUpMsg({...optionsPopUpMsgSinglePressBall}) }
+                    balls = { balls }
+                    width = { globalProps.widthGridPoolBall }
+                    doubleClick
+                    showBorders
+                />
+
+                {
+                    (indexSelected >= 0 && (availableBalls()).length > 0) && (
+                        <div style = { { width: "100%", marginTop: utilsGlobalStyles.spacingVertN() } }>
+                            <ButtonStandard 
+                                text = "Add Ball" 
+                                onPress = { handleAddBall }
+                                onSinglePress = { () => setOptionsPopUpMsg({...optionsPopUpMsgSingleAddRemoveBall}) }
+                                sizeText = { 1 } style = { styles.btnGame }
+                                isBold doubleClick
                             />
                         </div>
+                    )
+                }
 
-                        {
-                            (indexSelected >= 0 && (availableBalls()).length > 0) && (
-                                <button id = "btnAddBall" className = "btnBig" onClick = {handleAddBall}>Add Ball</button>
-                            )
-                        }
+                {
+                    ((indexSelected >= 0) && players[indexSelected].balls.filter(ball => !ball.in).length > 0) && (
+                        <div style = { { width: "100%", marginTop: utilsGlobalStyles.spacingVertN() } }>
+                            <ButtonStandard 
+                                text = "Remove Ball" 
+                                onPress = { handleRemoveBall }
+                                onSinglePress = { () => setOptionsPopUpMsg({...optionsPopUpMsgSingleAddRemoveBall}) }
+                                sizeText = { 1 } style = { styles.btnGame }
+                                isBold doubleClick
+                            />
+                        </div>
+                    )
+                }
 
-                        {
-                            ((indexSelected >= 0) && players[indexSelected].balls.filter(ball => !ball.in).length > 0) && (
-                                <button id = "btnRemoveBall" className = "btnBig" onClick = {handleRemoveBall}>Remove Ball</button>
-                            )
-                        }
-                    </div>
-                    
-                </div>
+            </CountContainer>
 
-            </div>
-
-        </div>
+        </PageContainer>
     );
 }
+
+const styles = 
+{
+    container:
+    {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        columnGap: utilsGlobalStyles.spacingVertN(1),
+        rowGap: utilsGlobalStyles.spacingVertN(0),
+        justifyContent: "center",
+        alignItems: "flex-start"
+    },
+    btnGame: 
+    {
+        width: "100%",
+        maxWidth: 500,
+        alignItems: "center",
+        padding: 10,
+        borderRadius: globalProps.borderRadiusStandard
+    },
+    lblPrompt:
+    {
+        marginBottom: utilsGlobalStyles.spacingVertN(-2)
+    }
+};
+
+// An object that defines the 'menu' header button.
+const optionsHeaderButtonMenu = 
+{
+    icon: (size, colour) =>
+    {
+        return (
+            <Home 
+                sx = { { color: colour, fontSize: size } }
+            />
+        )
+    },
+    onPress: (navigate, setOptionsPopUpMsg) =>
+    {
+        setOptionsPopUpMsg(
+            {
+                title: 'Return to Menu',
+                message: "Are you sure? You will lose your game's progress.",
+                buttons: [
+                    {
+                        text: "Return",
+                        onPress: () => {
+                            navigate("/", { replace: true });
+                        },
+                    },
+                    {
+                        text: "Cancel",
+                    }
+                ]
+            }
+        );
+    }
+}
+
+const optionsPopUpMsgSinglePressBall = 
+{
+    title: "Double-Press Required",
+    message: "You must press a ball twice in-a-row to add or remove it from the game.\n\nThis is to avoid 'misclicks' of the balls.",
+    buttons: [
+        {
+            text: "OK",
+        },
+    ],
+    dismissable: false,
+    id: "doublePressRequiredBalls",
+    showNeverShowAgainCheckbox: true
+}
+
+const optionsPopUpMsgSingleAddRemoveBall = 
+{
+    title: "Double-Press Required",
+    message: "The 'Add Ball' and 'Remove Ball' buttons must be pressed twice in-a-row to activate them.\n\nThis is to avoid 'misclicks'.",
+    buttons: [
+        {
+            text: "OK",
+        },
+    ],
+    dismissable: false,
+    id: "doublePressRequiredAddRemoveBall",
+    showNeverShowAgainCheckbox: true
+}
+
+
 
 export default Game;

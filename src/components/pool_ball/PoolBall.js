@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import "./style_pool_ball.css";
 
-import gColoursBalls from '../../../../utils/colours_pool_balls.js';
+import gColoursBalls from '../../utils/colours_pool_balls.js';
 
 const gColourTertiary = "#ffffff";
 const gColourTertiaryPotted = "#606060";
@@ -27,25 +27,7 @@ function PoolBall(props)
         width: `${props.sizeBall}px`,
         height: `${props.sizeBall}px`,
         padding: `${props.sizeBall * 1 / 6}px 0px`,
-        //margin: `${props.sizeBall * 35 / 100}px`,
-        marginTop: props.marginSize,
-        marginRight: props.marginSize,
-        marginBottom: props.marginSize,
-        marginLeft: props.marginSize,
-
     };
-
-    if (!props.margins[0])
-        lStyleBall.marginTop = "0";
-
-    if (!props.margins[1])
-        lStyleBall.marginRight = "0";
-
-    if (!props.margins[2])
-        lStyleBall.marginBottom = "0";
-
-    if (!props.margins[3])
-        lStyleBall.marginLeft = "0";
 
     const lStyleStripe = {
         backgroundColor: lColourPrimary,
@@ -65,7 +47,7 @@ function PoolBall(props)
     return (
         <div className = "poolBall" style = { lStyleBall }>
             <div className = "poolBallStripe" style = { lStyleStripe }>
-                <div className = "poolBallNumber" style = { lStyleNumber } >
+                <div className = "poolBallNumber unselectable" style = { lStyleNumber } >
                     { props.number }
                 </div>
             </div>
@@ -78,9 +60,15 @@ PoolBall.propTypes =
     number: PropTypes.number.isRequired,
     potted: PropTypes.bool.isRequired,
     selected: PropTypes.bool,
-    margins: PropTypes.array.isRequired,
-    marginSize: PropTypes.number,
     sizeBall: PropTypes.number,
 };
+
+PoolBall.defaultProps =
+{
+    number: 11,
+    potted: false,
+    selected: false,
+    sizeBall: PropTypes.number
+}
 
 export default PoolBall;

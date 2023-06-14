@@ -1,29 +1,24 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import CheckBox from '../components/check_box/CheckBox.js';
+import globalProps, { utilsGlobalStyles } from "../../styles.js";
+import utils from '../../utils/utils.js';
+import consts from '../../utils/constants.js';
 
-import utils from "../../utils/utils.js";
-import consts from "../../utils/constants.js";
+import optionsHeaderButtons from '../../components/options_header_buttons.js';
+import PageContainer from '../../components/page_container/PageContainer.js';
+import PrevPlayerLabel from '../../components/prev_player_label/PrevPlayerLabel.js';
+import TextStandard from '../../components/text_standard/TextStandard.js';
 
-import "./style_prev_names.css";
-
-function GetPrevNames()
+function PrevNames() 
 {
-    const lPrevNames = utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames);
-
-    return lPrevNames ? lPrevNames : [];
-}
-
-function PrevNames()
-{
-    const location = useLocation();
-
     const navigate = useNavigate();
+
+    const location = useLocation();
 
     const [selectedNames, setSelectedNames] = useState([]);
 
-    const [prevNames, setPrevNames] = useState(GetPrevNames());
+    const [prevNames, setPrevNames] = useState([]);
 
     const handleChange = (aName) =>
     {
@@ -72,6 +67,7 @@ function PrevNames()
                 // Remove the name.
                 lDeepCopy = lDeepCopy.filter((name) => name !== aName);
 
+                // Update the names in the device's internal storage.
                 utils.SetInLocalStorage(consts.lclStrgKeyPrevNames, lDeepCopy);
 
                 return lDeepCopy;
@@ -83,90 +79,94 @@ function PrevNames()
     {
         if (selectedNames.length === location.state.numPlayers)
         {
+            utils.RandomiseArray(selectedNames);
+
             navigate(
                 "/game", 
                 {
                     state: 
-                    {
-                        playerNames: selectedNames, 
-                        numBalls: location.state.numBalls, 
-                        showCounts: location.state.showCounts 
-                    } 
+                    { 
+                        ...location.state,
+                        playerNames: selectedNames,
+                    }
                 }
             );
         }
         else
         {
             navigate(
-                "/names", 
-                { 
+                "/playerNames", 
+                {
                     state: 
                     { 
-                        returningPlayers: selectedNames, 
-                        numPlayers: location.state.numPlayers, 
-                        numBalls: location.state.numBalls, 
-                        showCounts: location.state.showCounts 
-                    } 
+                        ...location.state,
+                        prevPlayers: selectedNames, 
+                    }
                 }
             );
         }
 
     }
 
-    let lLengthLongestName = 0;
-
-    for (const prevName of prevNames)
-    {
-        if (prevName.length > lLengthLongestName)
+    useEffect(
+        () =>
         {
-            lLengthLongestName = prevName.length;
-        }
-    }
+            const getAndSetPrevNames = async function() 
+            {
+                const lPrevNames = await utils.GetFromLocalStorage(consts.lclStrgKeyPrevNames, [])
 
-    return (
-        <div id = "conPrevNames" className = "pageContainer">
+                setPrevNames(lPrevNames);
+            };
 
-            <h1 className = "pageHeading">Returning Players</h1>
+            getAndSetPrevNames();
+        },
+        []
+    );
 
-            <div className = "content hideScrollBar">
+    return ( 
+        <PageContainer
+            navigate = { navigate }
+            buttonNavBarText = { selectedNames.length === location.state.numPlayers ? "Start" : "Next" }
+            buttonNavBarHandler = { handlePress }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
+            optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] }
+            style = { styles.container }
+        >
+            <TextStandard 
+                text = { "Select any returning players"} 
+                size = { 1 }
+                isBold
+                isItalic
+                style = { styles.titlePlayer }  
+            />
 
-                <p id = "pageInstructs">Select returning players from below</p>
+            {
+                prevNames.map(
+                    (name, index) =>
+                    {
+                        return (
+                            <PrevPlayerLabel 
+                                key = { index }
+                                name = { name }
+                                isSelected = { selectedNames.includes(name) }
+                                onSelect = { () => handleChange(name) }
+                                onRemove = { () => handleRemove(name) }
+                            />
+                        );
+                    }
+                )
+            }
 
-                {
-                    prevNames.map(
-                        (name, index) =>
-                        {
-                            const lId = `chk${name}`;
-
-                            const lIsLast = index === prevNames.length - 1;
-
-                            const lClass = lIsLast ? "conPrevPlayer conPrevPlayerLast" : "conPrevPlayer";
-
-                            return (
-                                <div className = { lClass } key = {`${name}-${index}`}>
-                                    <CheckBox 
-                                        id = {lId}
-                                        name = { name.padEnd(lLengthLongestName, ' ') }
-                                        onChange = { () => handleChange(name) }
-                                        checked = { selectedNames.includes(name) }
-                                    />
-                                    <button className = "btnRemove" onClick = { () => handleRemove(name) }>&mdash;</button>
-                                </div>
-                            );
-                        }
-                    )
-                }
-
-            </div>
-
-            <div className = "footer">
-
-                <button id = "btnNext" className = "btnBig" onClick = { handlePress }>Next</button>
-
-            </div>
-
-        </div>
+        </PageContainer>
     );
 }
+
+const styles =
+{
+    container:
+    {
+        rowGap: utilsGlobalStyles.spacingVertN(),
+    },
+};
 
 export default PrevNames;

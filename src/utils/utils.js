@@ -43,36 +43,30 @@ function SetInLocalStorage(aKey, aValue)
 
         localStorage[aKey] = JSON.stringify(Array.from(aValue));
     }
-    else if (aValue instanceof Array)
-    {
-        console.log("Storing an object in local storage.");
-
-        localStorage[aKey] = JSON.stringify(aValue);
-    }
-    else if (typeof aValue === 'object')
-    {
-        console.log("Storing an object in local storage.");
-
-        localStorage[aKey] = JSON.stringify(aValue);
-    }
     else
     {
-        localStorage[aKey] = aValue;
+        localStorage[aKey] = JSON.stringify(aValue);
     }
 
 }
 
-function GetFromLocalStorage(aKey)
+/*
+* Retrieves data from device's internal storage.
+
+* Parameters:
+    > aKey: the key that corresponds to the data.
+    > aAlt: the value that will be returned should the key have no corresponding value.
+*/
+function GetFromLocalStorage(aKey, aAlt = "")
 {
     if (!localStorage.hasOwnProperty(aKey))
     {
         console.log("localStorage doesn't contain data associated with this key.");
-        return;
     }
 
     const lString = localStorage[aKey];
 
-    return JSON.parse(lString);
+    return lString ? JSON.parse(lString) : aAlt;
 }
 
 function OrdinalSuffix(aNum)
